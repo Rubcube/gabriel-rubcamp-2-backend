@@ -4,7 +4,6 @@
 generator client {
   provider = "prisma-client-js"
   binaryTargets = ["native", "darwin", "darwin-arm64", "linux-musl", "debian-openssl-1.1.x", "darwin"]
-  previewFeatures = ["interactiveTransactions"]
 }
 
 datasource db {
@@ -13,29 +12,73 @@ datasource db {
 }
 
 model User {
-  id                      Int     @id @default(autoincrement())
-  full_name               String
-  email                   String @unique
+  id                      String      @id @default(uuid())
+  name                    String
+  email                   String      @unique
   phone                   String
-  cpf                     String @unique
+  document                String      @unique
   password                String
   transaction_password    String
-  created_at              DateTime @default(now())
-  updated_at              DateTime?
-  address                 Address[]
+  created_at              DateTime    @default(now())
+  updated_at              DateTime    @updatedAt
+  address                 Address?
+  accounts                Account[]
+
+  @@map("users")
 }
 
 model Address {
-  id            Int   @id @default(autoincrement())
-  user          User  @relation(fields: [userId], references: [id])
-  userId        Int
+  id            String      @id @default(uuid())
+  user          User        @relation(fields: [user_id], references: [id])
+  user_id       String      @unique
   cep           String
+  city          String
+  state         String
   street        String
   number        String
   complement    String
   neighborhood  String
-  city          String
-  state         String
-  created_at    DateTime @default(now())
-  updated_at    DateTime?
+  created_at    DateTime    @default(now())
+  updated_at    DateTime    @updatedAt
+
+  @@map("addresses")
+}
+
+model Account {
+  id          String    @id
+  user        User      @relation(fields: [user_id], references: [id])
+  user_id     String    @unique
+  balance     Int
+  account     String
+  agency      String    @unique
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
+
+  sended_internal_transfers     InternalTransfer[] @relation("internal_transfer_sender_account")
+  recipient_internal_transfers  InternalTransfer[] @relation("internal_transfer_recipient_account")
+
+  @@map("accounts")
+}
+
+enum InternalTranferStatus {
+  COMPLETED
+  CANCELED
+  REJECTED
+  REFUNDED
+  SCHEDULED
+}
+
+model InternalTransfer {
+  id                      String                  @id
+  sender_account          Account                 @relation("internal_transfer_sender_account", fields: [sender_account_id], references: [id])
+  recipient_account       Account                 @relation("internal_transfer_recipient_account", fields: [recipient_account_id], references: [id])
+  sender_account_id       String
+  recipient_account_id    String
+  amount                  Int
+  status                  InternalTranferStatus
+  scheduled_to            DateTime?
+  created_at              DateTime
+  updated_at              DateTime                @updatedAt
+
+  @@map("internal_transfers")
 }
