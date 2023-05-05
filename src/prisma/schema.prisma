@@ -48,6 +48,8 @@ model Address {
 enum AccountStatus {
   OPEN
   CLOSED
+  PENDING_APPROVAL
+  BLOCKED
 }
 
 model Account {

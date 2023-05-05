@@ -6,7 +6,7 @@
 
 */
 -- CreateEnum
-CREATE TYPE "AccountStatus" AS ENUM ('OPEN', 'CLOSED');
+CREATE TYPE "AccountStatus" AS ENUM ('OPEN', 'CLOSED', 'PENDING_APPROVAL', 'BLOCKED');
 
 -- CreateEnum
 CREATE TYPE "TransactionStatus" AS ENUM ('VOID', 'CONFIRMED', 'CANCELED', 'REJECTED');
