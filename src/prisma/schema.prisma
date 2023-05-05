@@ -19,10 +19,11 @@ model User {
   document                String      @unique
   password                String
   transaction_password    String
+  address                 Address?
+  address_id              String
+  accounts                Account[]
   created_at              DateTime    @default(now())
   updated_at              DateTime    @updatedAt
-  address                 Address?
-  accounts                Account[]
 
   @@map("users")
 }
@@ -44,20 +45,55 @@ model Address {
   @@map("addresses")
 }
 
+enum AccountStatus {
+  OPEN
+  CLOSED
+}
+
 model Account {
-  id          String    @id
-  user        User      @relation(fields: [user_id], references: [id])
-  user_id     String    @unique
-  balance     Int
-  account     String
-  agency      String    @unique
-  created_at  DateTime  @default(now())
-  updated_at  DateTime  @updatedAt
+  id            String          @id @default(uuid())
+  user          User            @relation(fields: [user_id], references: [id])
+  user_id       String          @unique
+  balance       Int
+  account       String
+  agency        String          @unique
+  status        AccountStatus
+  created_at    DateTime        @default(now())
+  updated_at    DateTime        @updatedAt
+
+  transactions  Transaction[]
 
   sended_internal_transfers     InternalTransfer[] @relation("internal_transfer_sender_account")
   recipient_internal_transfers  InternalTransfer[] @relation("internal_transfer_recipient_account")
 
   @@map("accounts")
+}
+
+enum TransactionStatus {
+  VOID
+  CONFIRMED
+  CANCELED
+  REJECTED
+}
+
+enum TransactionTypes {
+  INTERNAL_TRANSFER_INBOUND
+  INTERNAL_TRANSFER_OUTBOUND
+}
+
+model Transaction {
+  id          String              @id @default(uuid())
+  description String
+  amount      Int
+  status      TransactionStatus
+  type        TransactionTypes
+  account     Account             @relation(fields: [account_id], references: [id])
+  account_id  String
+  source_id   String
+  created_at  DateTime            @default(now())
+  updated_at  DateTime            @updatedAt
+
+  @@map("transations")
 }
 
 enum InternalTranferStatus {
@@ -69,16 +105,16 @@ enum InternalTranferStatus {
 }
 
 model InternalTransfer {
-  id                      String                  @id
-  sender_account          Account                 @relation("internal_transfer_sender_account", fields: [sender_account_id], references: [id])
-  recipient_account       Account                 @relation("internal_transfer_recipient_account", fields: [recipient_account_id], references: [id])
-  sender_account_id       String
-  recipient_account_id    String
-  amount                  Int
-  status                  InternalTranferStatus
-  scheduled_to            DateTime?
-  created_at              DateTime
-  updated_at              DateTime                @updatedAt
+  id                    String                  @id @default(uuid())
+  sender_account        Account                 @relation("internal_transfer_sender_account", fields: [sender_account_id], references: [id])
+  recipient_account     Account                 @relation("internal_transfer_recipient_account", fields: [recipient_account_id], references: [id])
+  sender_account_id     String
+  recipient_account_id  String
+  amount                Int
+  status                InternalTranferStatus
+  scheduled_to          DateTime?
+  created_at            DateTime
+  updated_at            DateTime                @updatedAt
 
   @@map("internal_transfers")
 }
