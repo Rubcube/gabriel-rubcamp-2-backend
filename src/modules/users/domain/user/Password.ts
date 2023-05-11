@@ -1,0 +1,67 @@
+import bcrypt from 'bcryptjs'
+
+import { ValueObject } from 'common/seedword/domain/ValueObject'
+import { type Either, right, left } from 'common/seedword/core/Either'
+import { type Violation } from 'common/seedword/domain/Violation'
+import { BadPasswordLengthViolation } from 'common/domain/violations/BadPasswordLengthViolation'
+import { Guard } from 'common/seedword/core/Guard'
+import { RequiredViolation } from 'common/domain/violations/RequiredViolation'
+import { WrongTypeViolation } from 'common/domain/violations/WrongTypeViolation'
+import { BadPasswordFormatViolation } from 'common/domain/violations/BadPasswordFormatViolation'
+
+interface PasswordProperties {
+	value: string
+	hashed: boolean
+}
+
+export class Password extends ValueObject<PasswordProperties> {
+	get value(): string {
+		return this.props.value
+	}
+
+	get hashed(): boolean {
+		return this.props.hashed
+	}
+
+	static isValid(password: string): boolean {
+		return /^(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$&*])(?=.*[0-9]).{8,}$/.test(password)
+	}
+
+	public async getHashedValue(): Promise<string> {
+		if (this.hashed) {
+			return this.value
+		}
+
+		return await bcrypt.hash(this.value, 8)
+	}
+
+	public async comparePassword(plainTextPassword: string): Promise<boolean> {
+		const hashedPassword = this.value
+
+		if (this.hashed) {
+			return await bcrypt.compare(plainTextPassword, hashedPassword)
+		}
+
+		return hashedPassword === plainTextPassword
+	}
+
+	static create(value: string, hashed: boolean): Either<Violation, Password> {
+		if (Guard.againstNullOrUndefined(value).fail) {
+			return left(new RequiredViolation('password', value))
+		}
+
+		if (Guard.isOfType('string', value).fail) {
+			return left(new WrongTypeViolation('password', typeof value))
+		}
+
+		if (value.trim().length < 8 || value.trim().length > 255) {
+			return left(new BadPasswordLengthViolation('password', value))
+		}
+
+		if (!hashed && !this.isValid(value)) {
+			return left(new BadPasswordFormatViolation('password', value))
+		}
+
+		return right(new Password({ value, hashed }))
+	}
+}
