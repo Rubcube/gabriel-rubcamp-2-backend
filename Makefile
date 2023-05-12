@@ -4,5 +4,8 @@ up-build:
 up:
 	docker compose up -d
 
+test:
+	docker compose up web_test
+
 down:
 	docker compose down -v

@@ -1,26 +1,24 @@
 {
-  "compilerOptions": {
-    "typeRoots": ["./src/@types", "./node_modules/@types","./src/@types/external"],
-    "target": "es6",
-    "module": "commonjs",
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "moduleResolution": "node",
-    "strict": true,
-    "baseUrl": "./src",
-    "sourceMap": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "paths": {
-      "types/*": ["@types/*"],
-      "controllers/*": ["controllers/*"],
-      "models/*": ["models/*"],
-      "routes/*": ["routes/*"],
-      "dtos/*": ["dtos/*"],
-      "services/*": ["services/*"]
-    }
-  },
-  "include": ["src/**/*.ts"],
-  "exclude": ["node_modules"]
+	"compilerOptions": {
+		"typeRoots": ["./src/@types", "./node_modules/@types", "./src/@types/external"],
+		"target": "es6",
+		"module": "commonjs",
+		"resolveJsonModule": true,
+		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true,
+		"moduleResolution": "node",
+		"strict": true,
+		"baseUrl": ".",
+		"sourceMap": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"paths": {
+			"common/*": ["src/common/*"],
+			"infrastructure/*": ["src/infrastructure/*"],
+			"config/*": ["src/config/*"],
+			"modules/*": ["src/modules/*"]
+		}
+	},
+	"include": ["src/**/*.ts", "tests/**/*.ts"],
+	"exclude": ["node_modules"]
 }
