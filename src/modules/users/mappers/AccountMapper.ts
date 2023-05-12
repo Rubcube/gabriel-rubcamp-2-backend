@@ -32,7 +32,6 @@ export class AccountMapper {
 			account: account.props.account,
 			agency: account.props.agency,
 			status: account.props.status,
-			transactional_password: account.props.transactional_password.value,
 			created_at: account.props.created_at.toISOString(),
 			updated_at: account.props.updated_at.toISOString(),
 			closed_at: account.props.closed_at ? account.props.closed_at.toISOString() : null,

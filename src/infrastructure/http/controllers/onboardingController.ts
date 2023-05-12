@@ -7,15 +7,16 @@ import { PrismaAccountRepository } from 'modules/users/repositories/PrismaAccoun
 import { PrismaUserRepository } from 'modules/users/repositories/PrismaUserRepository'
 import { CreateOnboardingService } from 'modules/users/service/OnboardingService'
 
+const userRepository = new PrismaUserRepository()
+const accountRepository = new PrismaAccountRepository()
+
+const service = new CreateOnboardingService(userRepository, accountRepository)
+
 export const onboardingController = {
 	async create(request: Request, response: Response): Promise<void> {
 		const { name, email, birthday, document, password, transactional_password } = request.body
 		const phone = Object(request.body.phone)
 		const address = Object(request.body.address)
-
-		const userRepository = new PrismaUserRepository()
-		const accountRepository = new PrismaAccountRepository()
-		const service = new CreateOnboardingService(userRepository, accountRepository)
 
 		const result = await service.execute({
 			name,

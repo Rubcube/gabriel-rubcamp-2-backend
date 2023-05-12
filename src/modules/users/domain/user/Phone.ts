@@ -1,12 +1,12 @@
-import { ValueObject } from 'common/seedword/domain/ValueObject'
-import { type Either, right, left } from 'common/seedword/core/Either'
-import { type Violation } from 'common/seedword/domain/Violation'
+import { ValueObject } from 'src/common/seedword/domain/ValueObject'
+import { type Either, right, left } from 'src/common/seedword/core/Either'
+import { type Violation } from 'src/common/seedword/domain/Violation'
 
-import { Guard } from 'common/seedword/core/Guard'
+import { Guard } from 'src/common/seedword/core/Guard'
 
-import { RequiredViolation } from 'common/domain/violations/RequiredViolation'
-import { WrongTypeViolation } from 'common/domain/violations/WrongTypeViolation'
-import { InvalidPhoneViolation } from 'common/domain/violations/InvalidPhoneViolation'
+import { RequiredViolation } from 'src/common/domain/violations/RequiredViolation'
+import { WrongTypeViolation } from 'src/common/domain/violations/WrongTypeViolation'
+import { InvalidPhoneViolation } from 'src/common/domain/violations/InvalidPhoneViolation'
 
 interface PhoneProperties {
 	country_code: string
@@ -39,33 +39,47 @@ export class Phone extends ValueObject<PhoneProperties> {
 		)
 	}
 
-	static create(properties: PhoneProperties): Either<Violation, Phone> {
-		if (Guard.againstNullOrUndefined(properties.country_code).fail) {
-			return left(new RequiredViolation('phone.country_code', properties.country_code))
+	static create(properties: PhoneProperties): Either<Violation[], Phone> {
+		const null_undefined_guard_result = Guard.againstNullOrUndefinedBulk([
+			{
+				field: 'phone.country_code',
+				value: properties.country_code
+			},
+			{
+				field: 'phone.area_code',
+				value: properties.area_code
+			},
+			{
+				field: 'phone.number',
+				value: properties.number
+			}
+		])
+
+		if (null_undefined_guard_result.fail) {
+			return left(null_undefined_guard_result.fields.map(field => new RequiredViolation(field)))
 		}
 
-		if (Guard.againstNullOrUndefined(properties.area_code).fail) {
-			return left(new RequiredViolation('phone.area_code', properties.area_code))
-		}
+		const type_guard_result = Guard.isOfTypeBulk('string', [
+			{
+				field: 'phone.country_code',
+				value: properties.country_code
+			},
+			{
+				field: 'phone.area_code',
+				value: properties.area_code
+			},
+			{
+				field: 'phone.number',
+				value: properties.number
+			}
+		])
 
-		if (Guard.againstNullOrUndefined(properties.number).fail) {
-			return left(new RequiredViolation('phone.number', properties.number))
-		}
-
-		if (Guard.isOfType('string', properties.country_code).fail) {
-			return left(new WrongTypeViolation('phone.country_code', properties.country_code))
-		}
-
-		if (Guard.isOfType('string', properties.area_code).fail) {
-			return left(new WrongTypeViolation('phone.area_code', properties.area_code))
-		}
-
-		if (Guard.isOfType('string', properties.number).fail) {
-			return left(new WrongTypeViolation('phone.number', properties.number))
+		if (type_guard_result.fail) {
+			return left(type_guard_result.fields.map(field => new WrongTypeViolation(field)))
 		}
 
 		if (!this.isValid(properties)) {
-			return left(new InvalidPhoneViolation())
+			return left([new InvalidPhoneViolation()])
 		}
 
 		return right(

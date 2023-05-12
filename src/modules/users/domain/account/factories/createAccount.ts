@@ -1,26 +1,26 @@
-import { type Either, left } from 'common/seedword/core/Either'
+import { type Either, left } from 'src/common/seedword/core/Either'
 import { Account } from '../Account'
 
-import { type Violation } from 'common/seedword/domain/Violation'
+import { type Violation } from 'src/common/seedword/domain/Violation'
 import { TransactionalPassword } from '../TransactionalPassword'
-import { UUID } from 'common/seedword/domain/UUID'
+import { UUID } from 'src/common/seedword/domain/UUID'
 
 interface CreateAccountProperties {
-	id?: string
+	id: string
 	user_id: string
-	balance?: number
-	account?: string
-	agency?: string
-	status?: string
+	balance: number
+	account: string
+	agency: string
+	status: string
 	transactional_password: string
-	created_at?: Date
-	updated_at?: Date
+	created_at: Date
+	updated_at: Date
 	closed_at?: Date
 	blocked_at?: Date
 }
 
 export function createAccount(properties: CreateAccountProperties): Either<Violation[], Account> {
-	const id = UUID.createUndefinable({ value: properties.id, field: 'id' })
+	const id = UUID.createFrom({ value: properties.id, field: 'id' })
 	const user_id = UUID.createFrom({ value: properties.user_id, field: 'user_id' })
 	const transactional_password = TransactionalPassword.create(properties.transactional_password)
 

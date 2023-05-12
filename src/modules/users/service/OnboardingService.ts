@@ -1,15 +1,22 @@
-import { type Either, right, left } from 'common/seedword/core/Either'
+import { type Either, right, left, combineLefts } from 'src/common/seedword/core/Either'
 
-import { InvalidParameterError } from 'common/errors/InvalidParameterError'
-import { InvalidOperationError } from 'common/errors/InvalidOperationError'
+import { InvalidParameterError } from 'src/common/errors/InvalidParameterError'
+import { InvalidOperationError } from 'src/common/errors/InvalidOperationError'
 
-import { type User } from '../domain/user/User'
+import { User } from '../domain/user/User'
 import { type IUserRepository } from '../domain/user/IUserRepository'
-import { createUser } from '../domain/user/factories/createUser'
 
-import { type Account } from 'modules/users/domain/account/Account'
+import { Account } from 'modules/users/domain/account/Account'
+import { TransactionalPassword } from '../domain/account/TransactionalPassword'
 import { type IAccountRepository } from 'modules/users/domain/account/IAccountRepository'
-import { createAccount } from 'modules/users/domain/account/factories/createAccount'
+
+import { Name } from '../domain/user/Name'
+import { Email } from '../domain/user/Email'
+import { Birthday } from '../domain/user/Birthday'
+import { Phone } from '../domain/user/Phone'
+import { Document } from '../domain/user/Document'
+import { Password } from '../domain/user/Password'
+import { Address } from '../domain/user/Address'
 
 interface Input {
 	name: string
@@ -43,70 +50,81 @@ export class CreateOnboardingService {
 	) {}
 
 	async execute(input: Input): Promise<Output> {
-		const documentAlreadyExists = await this.userRepository.documentExists(input.document)
+		const name = Name.create(input.name)
+		const email = Email.create(input.email)
+		const birthday = Birthday.create(input.birthday)
+		const phone = Phone.create({
+			country_code: input.phone.country_code,
+			area_code: input.phone.area_code,
+			number: input.phone.number
+		})
+		const document = Document.create(input.document)
+		const password = Password.create(input.password, false)
 
+		const transactional_password = TransactionalPassword.create(input.transactional_password)
+
+		const address = Address.create(input.address)
+
+		if (
+			name.isLeft() ||
+			email.isLeft() ||
+			birthday.isLeft() ||
+			phone.isLeft() ||
+			document.isLeft() ||
+			password.isLeft() ||
+			transactional_password.isLeft() ||
+			address.isLeft()
+		) {
+			return left(
+				new InvalidParameterError(
+					combineLefts(name, email, birthday, document, password, transactional_password).concat(
+						address.isLeft() ? address.value : [],
+						phone.isLeft() ? phone.value : []
+					)
+				)
+			)
+		}
+
+		const documentAlreadyExists = await this.userRepository.documentExists(input.document)
 		if (documentAlreadyExists) {
 			return left(new InvalidOperationError())
 		}
 
 		const emailAlreadyExists = await this.userRepository.emailExists(input.document)
-
 		if (emailAlreadyExists) {
 			return left(new InvalidOperationError())
 		}
 
-		const phoneAlreadyExists = await this.userRepository.phoneExists(
-			`${input.phone.country_code}${input.phone.area_code}${input.phone.number}`
-		)
-
+		const phoneAlreadyExists = await this.userRepository.phoneExists({
+			country_code: input.phone.country_code,
+			area_code: input.phone.area_code,
+			number: input.phone.number
+		})
 		if (phoneAlreadyExists) {
 			return left(new InvalidOperationError())
 		}
 
-		const user = createUser({
-			name: input.name,
-			email: input.email,
-			birthday: input.birthday,
-			phone: {
-				country_code: input.phone.country_code,
-				area_code: input.phone.area_code,
-				number: input.phone.number
-			},
-			document: input.document,
-			password: {
-				value: input.password,
-				hashed: false
-			},
-			address: {
-				zipcode: input.address.zipcode,
-				city: input.address.city,
-				state: input.address.state,
-				street: input.address.street,
-				number: input.address.number,
-				complement: input.address.complement,
-				neighborhood: input.address.neighborhood
-			}
+		const user = User.createNew({
+			name: name.value,
+			email: email.value,
+			birthday: birthday.value,
+			phone: phone.value,
+			document: document.value,
+			password: password.value,
+			address: address.value
 		})
 
-		if (user.isLeft()) {
-			return left(new InvalidParameterError(user.value))
-		}
-
-		const account = createAccount({
-			user_id: user.value.id.value,
-			transactional_password: input.transactional_password
+		const account = Account.createNew({
+			user_id: user.id,
+			transactional_password: transactional_password.value
 		})
 
-		if (account.isLeft()) {
-			return left(new InvalidParameterError(account.value))
-		}
-
-		await this.userRepository.save(user.value)
-		await this.accountRepository.save(account.value)
+		await this.userRepository.save(user)
+		await this.accountRepository.save(account)
 
 		return right({
-			user: user.value,
-			account: account.value
+			user,
+			account
 		})
 	}
 }

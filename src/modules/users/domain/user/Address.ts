@@ -1,12 +1,11 @@
-import { ValueObject } from 'common/seedword/domain/ValueObject'
-import { type Either, right, left } from 'common/seedword/core/Either'
-import { type Violation } from 'common/seedword/domain/Violation'
+import { ValueObject } from 'src/common/seedword/domain/ValueObject'
+import { type Either, right, left } from 'src/common/seedword/core/Either'
+import { type Violation } from 'src/common/seedword/domain/Violation'
 
-import { Guard } from 'common/seedword/core/Guard'
+import { Guard } from 'src/common/seedword/core/Guard'
 
-import { type Timestamp } from 'common/domain/Timestamp'
-import { RequiredViolation } from 'common/domain/violations/RequiredViolation'
-import { WrongTypeViolation } from 'common/domain/violations/WrongTypeViolation'
+import { RequiredViolation } from 'src/common/domain/violations/RequiredViolation'
+import { WrongTypeViolation } from 'src/common/domain/violations/WrongTypeViolation'
 
 interface AddressProperties {
 	zipcode: string
@@ -16,11 +15,15 @@ interface AddressProperties {
 	number: string
 	complement: string
 	neighborhood: string
-	updated_at: Timestamp
+	updated_at: Date
+}
+
+interface CreateNewAddressProperties extends Omit<AddressProperties, 'updated_at'> {
+	updated_at?: Date
 }
 
 export class Address extends ValueObject<AddressProperties> {
-	static create(properties: AddressProperties): Either<Violation[], Address> {
+	static create(properties: CreateNewAddressProperties): Either<Violation[], Address> {
 		const null_undefined_guard_result = Guard.againstNullOrUndefinedBulk([
 			{
 				field: 'address.zipcode',
@@ -53,7 +56,6 @@ export class Address extends ValueObject<AddressProperties> {
 		])
 
 		if (null_undefined_guard_result.fail) {
-			console.log('null_undefined_guard_result', null_undefined_guard_result)
 			return left(null_undefined_guard_result.fields.map(field => new RequiredViolation(field)))
 		}
 
@@ -101,7 +103,7 @@ export class Address extends ValueObject<AddressProperties> {
 				number: properties.number,
 				complement: properties.complement,
 				neighborhood: properties.neighborhood,
-				updated_at: properties.updated_at
+				updated_at: properties.updated_at ?? new Date()
 			})
 		)
 	}

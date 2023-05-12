@@ -1,12 +1,12 @@
-import { ValueObject } from 'common/seedword/domain/ValueObject'
-import { type Either, right, left } from 'common/seedword/core/Either'
-import { type Violation } from 'common/seedword/domain/Violation'
+import { ValueObject } from 'src/common/seedword/domain/ValueObject'
+import { type Either, right, left } from 'src/common/seedword/core/Either'
+import { type Violation } from 'src/common/seedword/domain/Violation'
 
-import { Guard } from 'common/seedword/core/Guard'
+import { Guard } from 'src/common/seedword/core/Guard'
 
-import { RequiredViolation } from 'common/domain/violations/RequiredViolation'
-import { WrongTypeViolation } from 'common/domain/violations/WrongTypeViolation'
-import { BadLengthViolation } from 'common/domain/violations/BadLengthViolation'
+import { RequiredViolation } from 'src/common/domain/violations/RequiredViolation'
+import { WrongTypeViolation } from 'src/common/domain/violations/WrongTypeViolation'
+import { BadLengthViolation } from 'src/common/domain/violations/BadLengthViolation'
 
 interface NameProperties {
 	value: string

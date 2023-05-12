@@ -30,8 +30,10 @@ export class UserMapper {
 				number: payload.address.number,
 				complement: payload.address.complement,
 				neighborhood: payload.address.neighborhood,
-				updated_at: payload.address.updated_at.toString()
-			}
+				updated_at: payload.address.updated_at
+			},
+			created_at: payload.created_at,
+			updated_at: payload.updated_at
 		})
 
 		if (user.isLeft()) throw new Error('Error on UserMapper.toDomain()')
@@ -59,10 +61,10 @@ export class UserMapper {
 				number: user.props.address.props.number,
 				complement: user.props.address.props.complement,
 				neighborhood: user.props.address.props.neighborhood,
-				updated_at: user.props.address.props.updated_at.value
+				updated_at: user.props.address.props.updated_at.toISOString()
 			},
-			created_at: user.props.created_at.value,
-			updated_at: user.props.updated_at.value
+			created_at: user.props.created_at.toISOString(),
+			updated_at: user.props.updated_at.toISOString()
 		}
 	}
 }

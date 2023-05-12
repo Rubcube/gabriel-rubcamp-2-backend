@@ -1,6 +1,6 @@
 import { type Response } from 'express'
-import { type AppError } from 'common/seedword/errors/AppError'
-import { AppErrorCodes } from 'common/seedword/errors/AppErrorCodes'
+import { type AppError } from 'src/common/seedword/errors/AppError'
+import { AppErrorCodes } from 'src/common/seedword/errors/AppErrorCodes'
 
 import { parseAppErrorToHTTPError } from './parseAppErrorToHttpError'
 

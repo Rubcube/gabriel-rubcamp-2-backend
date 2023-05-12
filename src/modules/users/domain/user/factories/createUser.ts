@@ -1,19 +1,19 @@
-import { type Either, left, combineLefts, right } from 'common/seedword/core/Either'
-import { type Violation } from 'common/seedword/domain/Violation'
+import { type Either, left, combineLefts, right } from 'src/common/seedword/core/Either'
+import { type Violation } from 'src/common/seedword/domain/Violation'
 
+import { UUID } from 'src/common/seedword/domain/UUID'
 import { User } from '../User'
+
 import { Name } from '../Name'
 import { Email } from '../Email'
 import { Birthday } from '../Birthday'
 import { Phone } from '../Phone'
 import { Document } from '../Document'
 import { Address } from '../Address'
-import { Timestamp } from 'common/domain/Timestamp'
 import { Password } from '../Password'
-import { UUID } from 'common/seedword/domain/UUID'
 
 interface CreateUserProperties {
-	id?: string
+	id: string
 	name: string
 	email: string
 	birthday: string
@@ -35,14 +35,14 @@ interface CreateUserProperties {
 		number: string
 		complement: string
 		neighborhood: string
-		updated_at?: string
+		updated_at: Date
 	}
-	created_at?: string
-	updated_at?: string
+	created_at: Date
+	updated_at: Date
 }
 
 export function createUser(properties: CreateUserProperties): Either<Violation[], User> {
-	const id = UUID.createUndefinable({ value: properties.id, field: 'id' })
+	const id = UUID.createFrom({ value: properties.id, field: 'id' })
 	const name = Name.create(properties.name)
 	const email = Email.create(properties.email)
 	const birthday = Birthday.create(properties.birthday)
@@ -53,8 +53,6 @@ export function createUser(properties: CreateUserProperties): Either<Violation[]
 	})
 	const document = Document.create(properties.document)
 	const password = Password.create(properties.password.value, properties.password.hashed)
-	const created_at = Timestamp.create({ value: properties.created_at, field: 'created_at' })
-	const updated_at = Timestamp.create({ value: properties.updated_at, field: 'updated_at' })
 	const address = createAddress({ address: properties.address })
 
 	if (
@@ -65,15 +63,12 @@ export function createUser(properties: CreateUserProperties): Either<Violation[]
 		phone.isLeft() ||
 		document.isLeft() ||
 		password.isLeft() ||
-		address.isLeft() ||
-		created_at.isLeft() ||
-		updated_at.isLeft()
+		address.isLeft()
 	) {
-		const addressLefts = address.isLeft() && address.value
-
 		return left([
-			...combineLefts(id, name, email, birthday, phone, document, password, created_at, updated_at).concat(
-				addressLefts || []
+			...combineLefts(id, name, email, birthday, document, password).concat(
+				address.isLeft() ? address.value : [],
+				phone.isLeft() ? phone.value : []
 			)
 		])
 	}
@@ -88,8 +83,8 @@ export function createUser(properties: CreateUserProperties): Either<Violation[]
 				document: document.value,
 				password: password.value,
 				address: address.value,
-				created_at: created_at.value,
-				updated_at: updated_at.value
+				created_at: properties.created_at,
+				updated_at: properties.updated_at
 			},
 			id.value
 		)
@@ -97,12 +92,6 @@ export function createUser(properties: CreateUserProperties): Either<Violation[]
 }
 
 export function createAddress(properties: Pick<CreateUserProperties, 'address'>): Either<Violation[], Address> {
-	const updated_at = Timestamp.create({ value: properties.address.updated_at, field: 'address.updated_at' })
-
-	if (updated_at.isLeft()) {
-		return left([updated_at.value])
-	}
-
 	const address = Address.create({
 		zipcode: properties.address.zipcode,
 		city: properties.address.city,
@@ -111,7 +100,7 @@ export function createAddress(properties: Pick<CreateUserProperties, 'address'>)
 		number: properties.address.number,
 		complement: properties.address.complement,
 		neighborhood: properties.address.neighborhood,
-		updated_at: updated_at.value
+		updated_at: properties.address.updated_at
 	})
 
 	if (address.isLeft()) {

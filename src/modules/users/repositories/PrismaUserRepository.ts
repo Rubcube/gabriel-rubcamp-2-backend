@@ -51,11 +51,11 @@ export class PrismaUserRepository implements IUserRepository {
 		)
 	}
 
-	async phoneExists(phone: string): Promise<boolean> {
+	async phoneExists(phone: { country_code: string; area_code: string; number: string }): Promise<boolean> {
 		return (
 			(await prisma.user.count({
 				where: {
-					phone
+					phone: `${phone.country_code}${phone.area_code}${phone.number}`
 				}
 			})) !== 0
 		)
@@ -82,11 +82,11 @@ export class PrismaUserRepository implements IUserRepository {
 						number: user.props.address.props.number,
 						complement: user.props.address.props.complement,
 						neighborhood: user.props.address.props.neighborhood,
-						updated_at: user.props.address.props.updated_at.value
+						updated_at: user.props.address.props.updated_at.toISOString()
 					}
 				},
-				created_at: user.props.created_at.value,
-				updated_at: user.props.updated_at.value
+				created_at: user.props.created_at.toISOString(),
+				updated_at: user.props.updated_at.toISOString()
 			}
 		})
 	}

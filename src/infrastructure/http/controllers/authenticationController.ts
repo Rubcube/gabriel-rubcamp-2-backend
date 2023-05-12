@@ -1,6 +1,6 @@
 import { type Request, type Response } from 'express'
 
-import { TokenProvider } from 'common/providers/implementations/TokenProvider'
+import { TokenProvider } from 'src/common/providers/implementations/TokenProvider'
 import { PrismaAccountRepository } from 'modules/users/repositories/PrismaAccountRepository'
 import { PrismaUserRepository } from 'modules/users/repositories/PrismaUserRepository'
 

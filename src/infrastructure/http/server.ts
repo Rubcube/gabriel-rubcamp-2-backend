@@ -5,8 +5,8 @@ import { DateTime } from 'luxon'
 
 import { onboardingRouter } from './routes/onboardingRouter'
 import { authRouter } from './routes/authRouter'
-import { InternalError } from 'common/errors/InternalError'
-import { fail } from 'common/utils/httpResponseUtil'
+import { InternalError } from 'src/common/errors/InternalError'
+import { fail } from 'src/common/utils/httpResponseUtil'
 
 const app = express()
 DateTime.local().setZone('America/Sao_Paulo')
@@ -26,3 +26,5 @@ app.use((error: any, _request: Request, response: Response, _next: NextFunction)
 app.listen(process.env.PORT ?? 3344, () => {
 	console.log('Application initialized')
 })
+
+export { app }

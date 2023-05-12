@@ -1,5 +1,5 @@
-import { AppError } from 'common/seedword/errors/AppError'
-import { AppErrorCodes } from 'common/seedword/errors/AppErrorCodes'
+import { AppError } from 'src/common/seedword/errors/AppError'
+import { AppErrorCodes } from 'src/common/seedword/errors/AppErrorCodes'
 
 export class ResourceNotFound extends AppError {
 	constructor() {
