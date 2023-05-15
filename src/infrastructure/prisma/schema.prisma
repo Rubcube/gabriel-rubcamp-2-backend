@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "darwin", "darwin-arm64", "linux-musl", "debian-openssl-1.1.x", "darwin"]
 }
 
@@ -12,33 +12,33 @@ datasource db {
 }
 
 model User {
-  id                      String      @id @default(uuid())
-  name                    String
-  email                   String      @unique
-  birthday                String
-  phone                   String			@unique
-  document                String      @unique
-  password                String
-  address                 Address?
-  accounts                Account[]
-  created_at              DateTime    @default(now())
-  updated_at              DateTime    @updatedAt
+  id         String   @id @default(uuid())
+  name       String
+  email      String   @unique
+  birthday   String
+  phone      String   @unique
+  document   String   @unique
+  password   String
+  address    Address?
+  account    Account?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   @@map("users")
 }
 
 model Address {
-  user          User        @relation(fields: [user_id], references: [id])
-  user_id       String      @id
-  zipcode       String
-  city          String
-  state         String
-  street        String
-  number        String
-  complement    String
-  neighborhood  String
-  created_at    DateTime    @default(now())
-  updated_at    DateTime    @updatedAt
+  user         User     @relation(fields: [user_id], references: [id])
+  user_id      String   @id
+  zipcode      String
+  city         String
+  state        String
+  street       String
+  number       String
+  complement   String
+  neighborhood String
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
 
   @@map("addresses")
 }
@@ -51,21 +51,21 @@ enum AccountStatus {
 }
 
 model Account {
-  id            String          @id @default(uuid())
-  user          User           	@relation(fields: [user_id], references: [id])
-  user_id       String         	@unique
-  balance       Int
-  account       String
-  agency        String
-  status        AccountStatus
-  transaction_password    			String
-  created_at    DateTime        @default(now())
-  updated_at    DateTime        @updatedAt
-	closed_at			DateTime?
-	blocked_at		DateTime?
+  id                   String        @id @default(uuid())
+  user                 User          @relation(fields: [user_id], references: [id])
+  user_id              String        @unique
+  balance              Int
+  account              String
+  agency               String
+  status               AccountStatus
+  transaction_password String
+  created_at           DateTime      @default(now())
+  updated_at           DateTime      @updatedAt
+  closed_at            DateTime?
+  blocked_at           DateTime?
 
-  sended_internal_transfers     InternalTransfer[] @relation("internal_transfer_sender_account")
-  recipient_internal_transfers  InternalTransfer[] @relation("internal_transfer_recipient_account")
+  sended_internal_transfers    InternalTransfer[] @relation("internal_transfer_sender_account")
+  recipient_internal_transfers InternalTransfer[] @relation("internal_transfer_recipient_account")
 
   @@map("accounts")
 }
@@ -79,16 +79,16 @@ enum InternalTranferStatus {
 }
 
 model InternalTransfer {
-  id                    String                  @id @default(uuid())
-  sender_account        Account                 @relation("internal_transfer_sender_account", fields: [sender_account_id], references: [id])
-  recipient_account     Account                 @relation("internal_transfer_recipient_account", fields: [recipient_account_id], references: [id])
-  sender_account_id     String
-  recipient_account_id  String
-  amount                Int
-  status                InternalTranferStatus
-  scheduled_to          DateTime?
-  created_at            DateTime
-  updated_at            DateTime                @updatedAt
+  id                   String                @id @default(uuid())
+  sender_account       Account               @relation("internal_transfer_sender_account", fields: [sender_account_id], references: [id])
+  recipient_account    Account               @relation("internal_transfer_recipient_account", fields: [recipient_account_id], references: [id])
+  sender_account_id    String
+  recipient_account_id String
+  amount               Int
+  status               InternalTranferStatus
+  scheduled_to         DateTime?
+  created_at           DateTime
+  updated_at           DateTime              @updatedAt
 
   @@map("internal_transfers")
 }
