@@ -1,3 +1,3 @@
 export const config = {
-	url: 'http://localhost:3344'
+	url: 'http://web:3344'
 }
