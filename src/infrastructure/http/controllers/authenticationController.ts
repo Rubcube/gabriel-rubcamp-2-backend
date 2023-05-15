@@ -1,11 +1,5 @@
-import { type Request, type Response } from 'express'
-
-import { TokenProvider } from 'src/common/providers/implementations/TokenProvider'
-import { PrismaAccountRepository } from 'modules/users/repositories/PrismaAccountRepository'
-import { PrismaUserRepository } from 'modules/users/repositories/PrismaUserRepository'
-
-import { AccountMapper } from 'modules/users/mappers/AccountMapper'
-import { UserMapper } from 'modules/users/mappers/UserMapper'
+import { container } from 'tsyringe'
+import { Request, Response } from 'express'
 
 import { AuthenticateService } from 'modules/users/service/AuthenticateService'
 
@@ -13,11 +7,7 @@ export const authenticateController = {
 	async create(request: Request, response: Response): Promise<void> {
 		const { document, password } = request.body
 
-		const userRepository = new PrismaUserRepository()
-		const accountRepository = new PrismaAccountRepository()
-		const tokenProvider = new TokenProvider()
-
-		const service = new AuthenticateService(userRepository, accountRepository, tokenProvider)
+		const service = container.resolve(AuthenticateService)
 
 		const result = await service.execute({
 			document,
@@ -25,11 +15,7 @@ export const authenticateController = {
 		})
 
 		if (result.isRight()) {
-			response.status(201).json({
-				user: UserMapper.toDTO(result.value.user),
-				account: AccountMapper.toDTO(result.value.account),
-				token: result.value.token
-			})
+			response.status(201).json({ token: result.value.token })
 
 			return
 		}

@@ -40,12 +40,12 @@ export const right = <L, R>(a: R): Either<L, R> => {
 	return new Right<L, R>(a)
 }
 
-export const combineLefts = <L>(...eithers: Array<Either<L, any>>): L[] => {
+export const combineLefts = <L>(...eithers: Array<Either<L, any> | Either<L[], any>>): L[] => {
 	const lefts: L[] = []
 
 	for (const either of eithers) {
 		if (either.isLeft()) {
-			lefts.push(either.value)
+			Array.isArray(either.value) ? lefts.push(...either.value) : lefts.push(either.value)
 		}
 	}
 

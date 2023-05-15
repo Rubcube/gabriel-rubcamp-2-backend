@@ -1,19 +1,17 @@
-import { type Either, right, left, combineLefts } from 'src/common/seedword/core/Either'
+import { Either, right, left, combineLefts } from 'src/common/seedword/core/Either'
 
 import { InvalidParameterError } from 'src/common/errors/InvalidParameterError'
 import { ResourceNotFound } from 'src/common/errors/ResourceNotFoundError'
 
-import { type User } from '../domain/user/User'
-import { type IUserRepository } from '../domain/user/IUserRepository'
-import { type Account } from '../domain/account/Account'
-import { type IAccountRepository } from '../domain/account/IAccountRepository'
+import { IUserRepository } from '../domain/user/IUserRepository'
+import { IAccountRepository } from '../domain/account/IAccountRepository'
 
-import { type ITokenProvider } from 'src/common/providers/ITokenProvider'
+import { ITokenProvider } from 'src/common/providers/ITokenProvider'
 
 import { Document } from '../domain/user/Document'
 import { Password } from '../domain/user/Password'
 
-interface Input {
+type Input = {
 	document: string
 	password: string
 }
@@ -21,8 +19,6 @@ interface Input {
 type Output = Either<
 	InvalidParameterError | ResourceNotFound,
 	{
-		user: User
-		account: Account
 		token: string
 	}
 >
@@ -60,8 +56,6 @@ export class AuthenticateService {
 		const token = this.tokenProvider.signUserToken(user)
 
 		return right({
-			user,
-			account,
 			token
 		})
 	}

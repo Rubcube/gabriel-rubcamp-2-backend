@@ -1,8 +1,9 @@
 import { prisma } from 'infrastructure/prisma/client'
 
-import { type User } from '../domain/user/User'
-import { type IUserRepository } from '../domain/user/IUserRepository'
+import { User } from '../domain/user/User'
+import { IUserRepository } from '../domain/user/IUserRepository'
 import { UserMapper } from '../mappers/UserMapper'
+import { Account } from '../domain/account/Account'
 
 export class PrismaUserRepository implements IUserRepository {
 	async findByDocument(document?: string): Promise<User | undefined> {
@@ -61,9 +62,7 @@ export class PrismaUserRepository implements IUserRepository {
 		)
 	}
 
-	async create(user: User): Promise<void> {}
-
-	async save(user: User): Promise<void> {
+	async create(user: User, account: Account): Promise<void> {
 		await prisma.user.create({
 			data: {
 				id: user.id.value,
@@ -85,11 +84,26 @@ export class PrismaUserRepository implements IUserRepository {
 						updated_at: user.props.address.props.updated_at.toISOString()
 					}
 				},
+				account: {
+					create: {
+						balance: account.props.balance,
+						account: account.props.account,
+						agency: account.props.agency,
+						status: 'OPEN',
+						transaction_password: account.props.transactional_password.value,
+						created_at: account.props.created_at,
+						updated_at: account.props.updated_at,
+						closed_at: account.props.closed_at,
+						blocked_at: account.props.blocked_at
+					}
+				},
 				created_at: user.props.created_at.toISOString(),
 				updated_at: user.props.updated_at.toISOString()
 			}
 		})
 	}
+
+	async save(user: User): Promise<void> {}
 
 	async delete(user: User): Promise<void> {}
 }

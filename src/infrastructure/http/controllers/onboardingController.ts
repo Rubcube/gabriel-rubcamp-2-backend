@@ -1,22 +1,15 @@
-import { type Request, type Response } from 'express'
+import { container } from 'tsyringe'
+import { Request, Response } from 'express'
 
-import { AccountMapper } from 'modules/users/mappers/AccountMapper'
-import { UserMapper } from 'modules/users/mappers/UserMapper'
-
-import { PrismaAccountRepository } from 'modules/users/repositories/PrismaAccountRepository'
-import { PrismaUserRepository } from 'modules/users/repositories/PrismaUserRepository'
 import { CreateOnboardingService } from 'modules/users/service/OnboardingService'
-
-const userRepository = new PrismaUserRepository()
-const accountRepository = new PrismaAccountRepository()
-
-const service = new CreateOnboardingService(userRepository, accountRepository)
 
 export const onboardingController = {
 	async create(request: Request, response: Response): Promise<void> {
 		const { name, email, birthday, document, password, transactional_password } = request.body
 		const phone = Object(request.body.phone)
 		const address = Object(request.body.address)
+
+		const service = container.resolve(CreateOnboardingService)
 
 		const result = await service.execute({
 			name,
@@ -38,10 +31,7 @@ export const onboardingController = {
 		})
 
 		if (result.isRight()) {
-			response.status(201).json({
-				user: UserMapper.toDTO(result.value.user),
-				account: AccountMapper.toDTO(result.value.account)
-			})
+			response.status(201).send()
 
 			return
 		}

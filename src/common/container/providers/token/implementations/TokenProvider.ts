@@ -1,8 +1,8 @@
 import { sign, verify } from 'jsonwebtoken'
 
-import { type TokenPayload } from '../ITokenPayload'
-import { type ITokenProvider } from '../ITokenProvider'
-import { type User } from 'modules/users/domain/user/User'
+import { TokenPayload } from '../ITokenPayload'
+import { ITokenProvider } from '../ITokenProvider'
+import { User } from 'modules/users/domain/user/User'
 
 import { authentication } from 'config/authentication'
 

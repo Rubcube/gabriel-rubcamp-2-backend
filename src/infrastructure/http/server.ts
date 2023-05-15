@@ -1,5 +1,7 @@
-import express, { type Request, type NextFunction, type Response } from 'express'
+import express, { Request, NextFunction, Response } from 'express'
 import 'express-async-errors'
+import 'reflect-metadata'
+import 'common/container'
 
 import { DateTime } from 'luxon'
 
