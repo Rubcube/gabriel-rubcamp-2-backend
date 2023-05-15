@@ -1,13 +1,13 @@
 import { AggregateRoot } from 'src/common/seedword/domain/AggregateRoot'
 
-import { type UUID } from 'src/common/seedword/domain/UUID'
-import { type Name } from './Name'
-import { type Email } from './Email'
-import { type Birthday } from './Birthday'
-import { type Phone } from './Phone'
-import { type Document } from './Document'
-import { type Password } from './Password'
-import { type Address } from './Address'
+import { UUID } from 'src/common/seedword/domain/UUID'
+import { Name } from './Name'
+import { Email } from './Email'
+import { Birthday } from './Birthday'
+import { Phone } from './Phone'
+import { Document } from './Document'
+import { Password } from './Password'
+import { Address } from './Address'
 
 type UserProperties = {
 	name: Name

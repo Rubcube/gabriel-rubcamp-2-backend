@@ -1,9 +1,9 @@
-import { type User as PrismaUser, type Address as PrismaAddress } from '@prisma/client'
+import { User as PrismaUser, Address as PrismaAddress } from '@prisma/client'
 
 import { createUser } from '../domain/user/factories/createUser'
 
-import { type User } from '../domain/user/User'
-import { type UserDTO } from '../dtos/UserDTO'
+import { User } from '../domain/user/User'
+import { UserDTO } from '../dtos/UserDTO'
 
 export class UserMapper {
 	static toDomain(payload: PrismaUser & { address: PrismaAddress }): User {

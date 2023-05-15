@@ -1,12 +1,12 @@
 import { ValueObject } from 'src/common/seedword/domain/ValueObject'
-import { type Either, right, left } from 'src/common/seedword/core/Either'
-import { type Violation } from 'src/common/seedword/domain/Violation'
+import { Either, right, left } from 'src/common/seedword/core/Either'
+import { Violation } from 'src/common/seedword/domain/Violation'
 import { BadPasswordFormatViolation } from 'src/common/domain/violations/BadPasswordFormatViolation'
 import { Guard } from 'src/common/seedword/core/Guard'
 import { RequiredViolation } from 'src/common/domain/violations/RequiredViolation'
 import { WrongTypeViolation } from 'src/common/domain/violations/WrongTypeViolation'
 
-interface TransactionalPasswordProperties {
+type TransactionalPasswordProperties = {
 	value: string
 }
 

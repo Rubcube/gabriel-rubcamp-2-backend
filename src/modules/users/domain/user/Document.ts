@@ -1,6 +1,6 @@
 import { ValueObject } from 'src/common/seedword/domain/ValueObject'
-import { type Either, right, left } from 'src/common/seedword/core/Either'
-import { type Violation } from 'src/common/seedword/domain/Violation'
+import { Either, right, left } from 'src/common/seedword/core/Either'
+import { Violation } from 'src/common/seedword/domain/Violation'
 
 import { Guard } from 'src/common/seedword/core/Guard'
 
@@ -8,7 +8,7 @@ import { WrongTypeViolation } from 'src/common/domain/violations/WrongTypeViolat
 import { RequiredViolation } from 'src/common/domain/violations/RequiredViolation'
 import { InvalidDocumentViolation } from 'src/common/domain/violations/InvalidDocumentViolation'
 
-interface DocumentProperties {
+type DocumentProperties = {
 	value: string
 }
 
@@ -18,7 +18,25 @@ export class Document extends ValueObject<DocumentProperties> {
 	}
 
 	private static isValid(properties: DocumentProperties): boolean {
-		return true
+		if (properties.value.length !== 11 || /^(\d)\1{10}$/.test(properties.value)) {
+			return false
+		}
+
+		let soma = 0
+		for (let i = 0; i < 9; i++) {
+			soma += parseInt(properties.value.charAt(i)) * (10 - i)
+		}
+
+		const digit1 = soma % 11 > 2 ? 11 - (soma % 11) : 0
+
+		soma = 0
+		for (let i = 0; i < 10; i++) {
+			soma += parseInt(properties.value.charAt(i)) * (11 - i)
+		}
+
+		const digit2 = soma % 11 > 2 ? 11 - (soma % 11) : 0
+
+		return properties.value === `${properties.value.substring(0, 9)}${digit1}${digit2}`
 	}
 
 	static create(value: string): Either<Violation, Document> {

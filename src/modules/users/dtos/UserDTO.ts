@@ -1,12 +1,12 @@
-import { type AddressDTO } from './AddressDTO'
+import { AddressDTO } from './AddressDTO'
 
-export interface UserPhoneDTO {
+export type UserPhoneDTO = {
 	country_code: string
 	area_code: string
 	number: string
 }
 
-export interface UserDTO {
+export type UserDTO = {
 	id: string
 	name: string
 	email: string

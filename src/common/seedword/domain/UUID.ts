@@ -1,7 +1,7 @@
 import { randomUUID } from 'crypto'
 import { Identifier } from './Identifier'
-import { type Either, right, left } from '../core/Either'
-import { type Violation } from './Violation'
+import { Either, right, left } from '../core/Either'
+import { Violation } from './Violation'
 import { WrongTypeViolation } from 'src/common/domain/violations/WrongTypeViolation'
 
 export class UUID extends Identifier<string> {

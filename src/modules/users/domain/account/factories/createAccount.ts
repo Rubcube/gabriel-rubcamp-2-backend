@@ -1,11 +1,11 @@
-import { type Either, left } from 'src/common/seedword/core/Either'
+import { Either, left, combineLefts } from 'src/common/seedword/core/Either'
 import { Account } from '../Account'
 
-import { type Violation } from 'src/common/seedword/domain/Violation'
-import { TransactionalPassword } from '../TransactionalPassword'
 import { UUID } from 'src/common/seedword/domain/UUID'
+import { TransactionalPassword } from '../TransactionalPassword'
+import { Violation } from 'src/common/seedword/domain/Violation'
 
-interface CreateAccountProperties {
+type CreateAccountProperties = {
 	id: string
 	user_id: string
 	balance: number
@@ -24,16 +24,8 @@ export function createAccount(properties: CreateAccountProperties): Either<Viola
 	const user_id = UUID.createFrom({ value: properties.user_id, field: 'user_id' })
 	const transactional_password = TransactionalPassword.create(properties.transactional_password)
 
-	if (id.isLeft()) {
-		return left([id.value])
-	}
-
-	if (user_id.isLeft()) {
-		return left([user_id.value])
-	}
-
-	if (transactional_password.isLeft()) {
-		return left([transactional_password.value])
+	if (id.isLeft() || user_id.isLeft() || transactional_password.isLeft()) {
+		return left(combineLefts(id, user_id, transactional_password))
 	}
 
 	return Account.create(

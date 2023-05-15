@@ -1,7 +1,7 @@
-import { type Violation } from '../domain/Violation'
-import { type AppErrorCodes } from './AppErrorCodes'
+import { Violation } from '../domain/Violation'
+import { AppErrorCodes } from './AppErrorCodes'
 
-interface AppErrorProperties {
+type AppErrorProperties = {
 	code: AppErrorCodes
 	message: string
 	violations?: Violation[]

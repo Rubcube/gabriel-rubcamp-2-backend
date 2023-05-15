@@ -1,6 +1,6 @@
-import { type Account as PrismaAccount } from '@prisma/client'
-import { type Account } from '../domain/account/Account'
-import { type AccountDTO } from '../dtos/AccountDTO'
+import { Account as PrismaAccount } from '@prisma/client'
+import { Account } from '../domain/account/Account'
+import { AccountDTO } from '../dtos/AccountDTO'
 import { createAccount } from '../domain/account/factories/createAccount'
 
 export class AccountMapper {

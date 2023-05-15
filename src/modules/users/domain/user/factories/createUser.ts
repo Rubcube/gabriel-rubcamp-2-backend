@@ -1,5 +1,5 @@
-import { type Either, left, combineLefts, right } from 'src/common/seedword/core/Either'
-import { type Violation } from 'src/common/seedword/domain/Violation'
+import { Either, left, combineLefts, right } from 'src/common/seedword/core/Either'
+import { Violation } from 'src/common/seedword/domain/Violation'
 
 import { UUID } from 'src/common/seedword/domain/UUID'
 import { User } from '../User'
@@ -12,7 +12,7 @@ import { Document } from '../Document'
 import { Address } from '../Address'
 import { Password } from '../Password'
 
-interface CreateUserProperties {
+type CreateUserProperties = {
 	id: string
 	name: string
 	email: string
@@ -65,12 +65,7 @@ export function createUser(properties: CreateUserProperties): Either<Violation[]
 		password.isLeft() ||
 		address.isLeft()
 	) {
-		return left([
-			...combineLefts(id, name, email, birthday, document, password).concat(
-				address.isLeft() ? address.value : [],
-				phone.isLeft() ? phone.value : []
-			)
-		])
+		return left(combineLefts(id, name, email, birthday, phone, document, password, address))
 	}
 
 	return right(

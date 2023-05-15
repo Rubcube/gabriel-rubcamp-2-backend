@@ -1,5 +1,5 @@
-import { type AppError } from 'src/common/seedword/errors/AppError'
-import { type HTTPError } from 'infrastructure/http/error'
+import { AppError } from 'src/common/seedword/errors/AppError'
+import { HTTPError } from 'infrastructure/http/error'
 
 export function parseAppErrorToHTTPError(appError: AppError): HTTPError {
 	return {

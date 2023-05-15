@@ -1,13 +1,13 @@
 import { ValueObject } from 'src/common/seedword/domain/ValueObject'
-import { type Either, right, left } from 'src/common/seedword/core/Either'
-import { type Violation } from 'src/common/seedword/domain/Violation'
+import { Either, right, left } from 'src/common/seedword/core/Either'
+import { Violation } from 'src/common/seedword/domain/Violation'
 
 import { Guard } from 'src/common/seedword/core/Guard'
 
 import { RequiredViolation } from 'src/common/domain/violations/RequiredViolation'
 import { WrongTypeViolation } from 'src/common/domain/violations/WrongTypeViolation'
 
-interface AddressProperties {
+type AddressProperties = {
 	zipcode: string
 	city: string
 	state: string
@@ -18,9 +18,9 @@ interface AddressProperties {
 	updated_at: Date
 }
 
-interface CreateNewAddressProperties extends Omit<AddressProperties, 'updated_at'> {
+type CreateNewAddressProperties = {
 	updated_at?: Date
-}
+} & Omit<AddressProperties, 'updated_at'>
 
 export class Address extends ValueObject<AddressProperties> {
 	static create(properties: CreateNewAddressProperties): Either<Violation[], Address> {

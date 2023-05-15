@@ -1,6 +1,6 @@
 import { ValueObject } from 'src/common/seedword/domain/ValueObject'
-import { type Either, right, left } from 'src/common/seedword/core/Either'
-import { type Violation } from 'src/common/seedword/domain/Violation'
+import { Either, right, left } from 'src/common/seedword/core/Either'
+import { Violation } from 'src/common/seedword/domain/Violation'
 
 import { Guard } from 'src/common/seedword/core/Guard'
 
@@ -8,7 +8,7 @@ import { RequiredViolation } from 'src/common/domain/violations/RequiredViolatio
 import { WrongTypeViolation } from 'src/common/domain/violations/WrongTypeViolation'
 import { BadLengthViolation } from 'src/common/domain/violations/BadLengthViolation'
 
-interface NameProperties {
+type NameProperties = {
 	value: string
 }
 

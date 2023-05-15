@@ -1,6 +1,6 @@
-import { type ViolationCodes } from './ViolationCodes'
+import { ViolationCodes } from './ViolationCodes'
 
-interface ViolationProperties {
+type ViolationProperties = {
 	code: ViolationCodes
 	field: string
 	value?: string

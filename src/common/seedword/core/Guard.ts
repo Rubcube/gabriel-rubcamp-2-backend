@@ -1,25 +1,25 @@
-interface IGuardResult {
+type IGuardResult = {
 	succeeded: boolean
 	fail: boolean
 }
 
-interface ITypeBulkRequest {
+type ITypeBulkRequest = {
 	value: any
 	field: string
 }
 
-interface ITypeBulkResult extends IGuardResult {
+type ITypeBulkResult = {
 	fields: string[]
-}
+} & IGuardResult
 
-interface INullUndefinedBulkRequest {
+type INullUndefinedBulkRequest = {
 	value: any
 	field: string
 }
 
-interface INullUndefinedBulkRseult extends IGuardResult {
+type INullUndefinedBulkRseult = {
 	fields: string[]
-}
+} & IGuardResult
 
 function mountResult(expression: boolean): IGuardResult {
 	return expression ? { succeeded: true, fail: false } : { succeeded: false, fail: true }

@@ -1,4 +1,4 @@
-export interface AccountDTO {
+export type AccountDTO = {
 	id: string
 	user_id: string
 	balance: number

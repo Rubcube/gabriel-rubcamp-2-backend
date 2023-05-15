@@ -1,12 +1,12 @@
 import { AggregateRoot } from 'src/common/seedword/domain/AggregateRoot'
-import { type Either, right } from 'src/common/seedword/core/Either'
-import { type Violation } from 'src/common/seedword/domain/Violation'
+import { Either, right } from 'src/common/seedword/core/Either'
+import { Violation } from 'src/common/seedword/domain/Violation'
 
-import { type UUID } from 'src/common/seedword/domain/UUID'
+import { UUID } from 'src/common/seedword/domain/UUID'
 
-import { type TransactionalPassword } from './TransactionalPassword'
+import { TransactionalPassword } from './TransactionalPassword'
 
-interface AccountProperties {
+type AccountProperties = {
 	user_id: UUID
 	balance: number
 	account: string

@@ -1,15 +1,15 @@
 import bcrypt from 'bcryptjs'
 
 import { ValueObject } from 'src/common/seedword/domain/ValueObject'
-import { type Either, right, left } from 'src/common/seedword/core/Either'
-import { type Violation } from 'src/common/seedword/domain/Violation'
+import { Either, right, left } from 'src/common/seedword/core/Either'
+import { Violation } from 'src/common/seedword/domain/Violation'
 import { BadPasswordLengthViolation } from 'src/common/domain/violations/BadPasswordLengthViolation'
 import { Guard } from 'src/common/seedword/core/Guard'
 import { RequiredViolation } from 'src/common/domain/violations/RequiredViolation'
 import { WrongTypeViolation } from 'src/common/domain/violations/WrongTypeViolation'
 import { BadPasswordFormatViolation } from 'src/common/domain/violations/BadPasswordFormatViolation'
 
-interface PasswordProperties {
+type PasswordProperties = {
 	value: string
 	hashed: boolean
 }

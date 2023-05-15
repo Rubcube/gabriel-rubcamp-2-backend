@@ -1,4 +1,4 @@
-import { type Violation } from 'src/common/seedword/domain/Violation'
+import { Violation } from 'src/common/seedword/domain/Violation'
 import { AppError } from 'src/common/seedword/errors/AppError'
 import { AppErrorCodes } from 'src/common/seedword/errors/AppErrorCodes'
 

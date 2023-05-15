@@ -1,4 +1,4 @@
-export interface AddressDTO {
+export type AddressDTO = {
 	zipcode: string
 	city: string
 	state: string
