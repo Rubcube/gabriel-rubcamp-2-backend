@@ -1,14 +1,14 @@
-import { type Either, right, left, combineLefts } from 'src/common/seedword/core/Either'
+import { inject, injectable } from 'tsyringe'
+import { Either, right, left, combineLefts } from 'src/common/seedword/core/Either'
 
 import { InvalidParameterError } from 'src/common/errors/InvalidParameterError'
 import { InvalidOperationError } from 'src/common/errors/InvalidOperationError'
 
 import { User } from '../domain/user/User'
-import { type IUserRepository } from '../domain/user/IUserRepository'
+import { IUserRepository } from '../domain/user/IUserRepository'
 
 import { Account } from 'modules/users/domain/account/Account'
 import { TransactionalPassword } from '../domain/account/TransactionalPassword'
-import { type IAccountRepository } from 'modules/users/domain/account/IAccountRepository'
 
 import { Name } from '../domain/user/Name'
 import { Email } from '../domain/user/Email'
@@ -18,7 +18,7 @@ import { Document } from '../domain/user/Document'
 import { Password } from '../domain/user/Password'
 import { Address } from '../domain/user/Address'
 
-interface Input {
+type Input = {
 	name: string
 	email: string
 	birthday: string
@@ -41,12 +41,13 @@ interface Input {
 	}
 }
 
-type Output = Either<InvalidOperationError | InvalidParameterError, { user: User; account: Account }>
+type Output = Either<InvalidParameterError | InvalidOperationError, null>
 
+@injectable()
 export class CreateOnboardingService {
 	constructor(
-		private readonly userRepository: IUserRepository,
-		private readonly accountRepository: IAccountRepository
+		@inject('UserRepository')
+		private readonly userRepository: IUserRepository
 	) {}
 
 	async execute(input: Input): Promise<Output> {
@@ -77,10 +78,7 @@ export class CreateOnboardingService {
 		) {
 			return left(
 				new InvalidParameterError(
-					combineLefts(name, email, birthday, document, password, transactional_password).concat(
-						address.isLeft() ? address.value : [],
-						phone.isLeft() ? phone.value : []
-					)
+					combineLefts(name, email, birthday, phone, document, password, transactional_password, address)
 				)
 			)
 		}
@@ -119,12 +117,8 @@ export class CreateOnboardingService {
 			transactional_password: transactional_password.value
 		})
 
-		await this.userRepository.save(user)
-		await this.accountRepository.save(account)
+		await this.userRepository.create(user, account)
 
-		return right({
-			user,
-			account
-		})
+		return right(null)
 	}
 }
