@@ -1,8 +1,8 @@
 import { container } from 'tsyringe'
 import { Request, Response } from 'express'
-
-import { LoginService } from 'modules/users/service/LoginService'
 import { created, fail } from 'common/utils/httpResponseUtil'
+
+import { LoginService } from 'modules/identity/service/LoginService'
 
 export class AuthenticateController {
 	async create(request: Request, response: Response): Promise<Response> {
