@@ -1,12 +1,13 @@
-import { Either, right, left, combineLefts } from 'src/common/seedword/core/Either'
+import { inject, injectable } from 'tsyringe'
+import { Either, right, left, combineLefts } from 'common/seedword/core/Either'
 
-import { InvalidParameterError } from 'src/common/errors/InvalidParameterError'
-import { ResourceNotFound } from 'src/common/errors/ResourceNotFoundError'
+import { InvalidParameterError } from 'common/errors/InvalidParameterError'
+import { ResourceNotFound } from 'common/errors/ResourceNotFoundError'
 
 import { IUserRepository } from '../domain/user/IUserRepository'
 import { IAccountRepository } from '../domain/account/IAccountRepository'
 
-import { ITokenProvider } from 'src/common/providers/ITokenProvider'
+import { ITokenProvider } from 'common/providers/token/ITokenProvider'
 
 import { Document } from '../domain/user/Document'
 import { Password } from '../domain/user/Password'
@@ -23,10 +24,14 @@ type Output = Either<
 	}
 >
 
-export class AuthenticateService {
+@injectable()
+export class LoginService {
 	constructor(
+		@inject('UserRepository')
 		private readonly userRepository: IUserRepository,
+		@inject('AccountRepository')
 		private readonly accountRepository: IAccountRepository,
+		@inject('TokenProvider')
 		private readonly tokenProvider: ITokenProvider
 	) {}
 

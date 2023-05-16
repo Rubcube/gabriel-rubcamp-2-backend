@@ -1,8 +1,8 @@
-import { AggregateRoot } from 'src/common/seedword/domain/AggregateRoot'
-import { Either, right } from 'src/common/seedword/core/Either'
-import { Violation } from 'src/common/seedword/domain/Violation'
+import { AggregateRoot } from 'common/seedword/domain/AggregateRoot'
+import { Either, right } from 'common/seedword/core/Either'
+import { Violation } from 'common/seedword/domain/Violation'
 
-import { UUID } from 'src/common/seedword/domain/UUID'
+import { UUID } from 'common/seedword/domain/UUID'
 
 import { TransactionalPassword } from './TransactionalPassword'
 

@@ -1,7 +1,7 @@
-import { Either, left, combineLefts, right } from 'src/common/seedword/core/Either'
-import { Violation } from 'src/common/seedword/domain/Violation'
+import { Either, left, combineLefts, right } from 'common/seedword/core/Either'
+import { Violation } from 'common/seedword/domain/Violation'
 
-import { UUID } from 'src/common/seedword/domain/UUID'
+import { UUID } from 'common/seedword/domain/UUID'
 import { User } from '../User'
 
 import { Name } from '../Name'

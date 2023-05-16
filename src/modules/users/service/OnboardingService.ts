@@ -1,8 +1,8 @@
 import { inject, injectable } from 'tsyringe'
-import { Either, right, left, combineLefts } from 'src/common/seedword/core/Either'
+import { Either, right, left, combineLefts } from 'common/seedword/core/Either'
 
-import { InvalidParameterError } from 'src/common/errors/InvalidParameterError'
-import { InvalidOperationError } from 'src/common/errors/InvalidOperationError'
+import { InvalidParameterError } from 'common/errors/InvalidParameterError'
+import { InvalidOperationError } from 'common/errors/InvalidOperationError'
 
 import { User } from '../domain/user/User'
 import { IUserRepository } from '../domain/user/IUserRepository'

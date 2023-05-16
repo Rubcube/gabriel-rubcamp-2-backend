@@ -1,6 +1,6 @@
-import { AggregateRoot } from 'src/common/seedword/domain/AggregateRoot'
+import { AggregateRoot } from 'common/seedword/domain/AggregateRoot'
 
-import { UUID } from 'src/common/seedword/domain/UUID'
+import { UUID } from 'common/seedword/domain/UUID'
 import { Name } from './Name'
 import { Email } from './Email'
 import { Birthday } from './Birthday'

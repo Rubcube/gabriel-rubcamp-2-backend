@@ -1,12 +1,12 @@
-import { ValueObject } from 'src/common/seedword/domain/ValueObject'
-import { Either, right, left } from 'src/common/seedword/core/Either'
-import { Violation } from 'src/common/seedword/domain/Violation'
+import { ValueObject } from 'common/seedword/domain/ValueObject'
+import { Either, right, left } from 'common/seedword/core/Either'
+import { Violation } from 'common/seedword/domain/Violation'
 
-import { Guard } from 'src/common/seedword/core/Guard'
+import { Guard } from 'common/seedword/core/Guard'
 
-import { RequiredViolation } from 'src/common/domain/violations/RequiredViolation'
-import { WrongTypeViolation } from 'src/common/domain/violations/WrongTypeViolation'
-import { InvalidPhoneViolation } from 'src/common/domain/violations/InvalidPhoneViolation'
+import { RequiredViolation } from 'common/domain/violations/RequiredViolation'
+import { WrongTypeViolation } from 'common/domain/violations/WrongTypeViolation'
+import { InvalidPhoneViolation } from 'common/domain/violations/InvalidPhoneViolation'
 
 type PhoneProperties = {
 	country_code: string

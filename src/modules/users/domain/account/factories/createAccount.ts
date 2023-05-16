@@ -1,9 +1,9 @@
-import { Either, left, combineLefts } from 'src/common/seedword/core/Either'
+import { Either, left, combineLefts } from 'common/seedword/core/Either'
 import { Account } from '../Account'
 
-import { UUID } from 'src/common/seedword/domain/UUID'
+import { UUID } from 'common/seedword/domain/UUID'
 import { TransactionalPassword } from '../TransactionalPassword'
-import { Violation } from 'src/common/seedword/domain/Violation'
+import { Violation } from 'common/seedword/domain/Violation'
 
 type CreateAccountProperties = {
 	id: string

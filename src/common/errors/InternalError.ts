@@ -1,6 +1,6 @@
-import { Violation } from 'src/common/seedword/domain/Violation'
-import { AppError } from 'src/common/seedword/errors/AppError'
-import { AppErrorCodes } from 'src/common/seedword/errors/AppErrorCodes'
+import { Violation } from 'common/seedword/domain/Violation'
+import { AppError } from 'common/seedword/errors/AppError'
+import { AppErrorCodes } from 'common/seedword/errors/AppErrorCodes'
 
 export class InternalError extends AppError {
 	constructor(violations?: Violation[]) {
