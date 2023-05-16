@@ -5,23 +5,30 @@ import { IAccountRepository } from '../domain/account/IAccountRepository'
 import { AccountMapper } from '../mappers/AccountMapper'
 
 export class PrismaAccountRepository implements IAccountRepository {
-	async findById(id: string): Promise<Account | undefined> {
-		return undefined
+	async findById(id: string): Promise<Account | null> {
+		return null
 	}
 
-	async findByUserId(user_id: string): Promise<Account | undefined> {
+	async findByUserId(user_id: string): Promise<Account | null> {
 		const account = await prisma.account.findUnique({
 			where: {
 				user_id
 			}
 		})
 
-		if (account == null) return undefined
-
-		return AccountMapper.toDomain(account)
+		return account ? AccountMapper.toDomain(account) : null
 	}
 
-	async save(account: Account): Promise<void> {}
+	async findBalanceById(id: string): Promise<number | null> {
+		const account = await prisma.account.findUnique({
+			where: {
+				id
+			},
+			select: {
+				balance: true
+			}
+		})
 
-	async delete(account: Account): Promise<void> {}
+		return account ? account.balance : null
+	}
 }

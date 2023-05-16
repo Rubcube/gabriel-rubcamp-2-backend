@@ -6,7 +6,7 @@ import { UserMapper } from '../mappers/UserMapper'
 import { Account } from '../domain/account/Account'
 
 export class PrismaUserRepository implements IUserRepository {
-	async findByDocument(document?: string): Promise<User | undefined> {
+	async findByDocument(document?: string): Promise<User | null> {
 		const user = await prisma.user.findUnique({
 			where: {
 				document
@@ -16,7 +16,7 @@ export class PrismaUserRepository implements IUserRepository {
 			}
 		})
 
-		if (user == null || user.address == null) return undefined
+		if (user == null || user.address == null) return null
 
 		return UserMapper.toDomain({
 			id: user.id,
@@ -102,8 +102,4 @@ export class PrismaUserRepository implements IUserRepository {
 			}
 		})
 	}
-
-	async save(user: User): Promise<void> {}
-
-	async delete(user: User): Promise<void> {}
 }
