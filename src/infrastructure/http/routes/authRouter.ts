@@ -1,8 +1,9 @@
 import { Router } from 'express'
 
-import { authenticateController } from '../controllers/authenticationController'
+import { AuthenticateController } from '../controllers/AuthenticationController'
 
 const authRouter = Router()
+const authenticateController = new AuthenticateController()
 
 authRouter.post('/login', authenticateController.create)
 

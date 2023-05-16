@@ -2,9 +2,10 @@ import { container } from 'tsyringe'
 import { Request, Response } from 'express'
 
 import { CreateOnboardingService } from 'modules/users/service/OnboardingService'
+import { created, fail } from 'common/utils/httpResponseUtil'
 
-export const onboardingController = {
-	async create(request: Request, response: Response): Promise<void> {
+export class OnboardingController {
+	async create(request: Request, response: Response): Promise<Response> {
 		const { name, email, birthday, document, password, transactional_password } = request.body
 		const phone = Object(request.body.phone)
 		const address = Object(request.body.address)
@@ -31,11 +32,9 @@ export const onboardingController = {
 		})
 
 		if (result.isRight()) {
-			response.status(201).send()
-
-			return
+			return created(response)
 		}
 
-		response.status(400).send(result.value)
+		return fail(response, result.value)
 	}
 }

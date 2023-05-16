@@ -1,11 +1,9 @@
 import { Router } from 'express'
 
-import { ensureAuthentication } from '../middlewares/ensureAuthentication'
-import { onboardingController } from '../controllers/onboardingController'
+import { OnboardingController } from '../controllers/OnboardingController'
 
 const onboardingRouter = Router()
-
-onboardingRouter.use(ensureAuthentication)
+const onboardingController = new OnboardingController()
 
 onboardingRouter.post('/', onboardingController.create)
 
