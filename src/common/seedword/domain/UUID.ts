@@ -1,8 +1,10 @@
 import { randomUUID } from 'crypto'
 import { Identifier } from './Identifier'
 import { Either, right, left } from '../core/Either'
+
 import { Violation } from './Violation'
-import { WrongTypeViolation } from 'src/common/domain/violations/WrongTypeViolation'
+import { WrongTypeViolation } from 'common/domain/violations/WrongTypeViolation'
+import { WrongUUIViolation } from 'common/domain/violations/WrongUUIDViolation'
 
 export class UUID extends Identifier<string> {
 	constructor(id?: string) {
@@ -14,8 +16,12 @@ export class UUID extends Identifier<string> {
 	}
 
 	static createFrom(properties: { value: string; field: string }): Either<Violation, UUID> {
-		if (!this.isValid(properties.value)) {
+		if (typeof properties.value !== 'string') {
 			return left(new WrongTypeViolation(properties.field, properties.value))
+		}
+
+		if (!this.isValid(properties.value)) {
+			return left(new WrongUUIViolation(properties.field))
 		}
 
 		return right(new UUID(properties.value))
