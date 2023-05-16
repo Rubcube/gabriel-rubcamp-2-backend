@@ -1,27 +1,33 @@
 import express, { Request, NextFunction, Response } from 'express'
+import { DateTime } from 'luxon'
 import 'express-async-errors'
 import 'reflect-metadata'
 import 'common/container'
 
-import { DateTime } from 'luxon'
-
 import { onboardingRouter } from './routes/onboardingRouter'
 import { authRouter } from './routes/authRouter'
-import { InternalError } from 'src/common/errors/InternalError'
-import { fail } from 'src/common/utils/httpResponseUtil'
+import { accountRouter } from './routes/accountRouter'
 
-const app = express()
+import { fail } from 'common/utils/httpResponseUtil'
+import { InternalError } from 'common/errors/InternalError'
+import { NotFoundError } from 'common/errors/NotFoundError'
+
 DateTime.local().setZone('America/Sao_Paulo')
+const app = express()
 
 app.use(express.json())
 
 app.get('/health_check', (_, response) => response.send('Hello World!'))
 app.use('/onboarding', onboardingRouter)
 app.use('/auth', authRouter)
+app.use('/accounts', accountRouter)
+
+app.use('*', (_, response) => {
+	return fail(response, new NotFoundError())
+})
 
 app.use((error: any, _request: Request, response: Response, _next: NextFunction): Response => {
 	console.log('>>> ERROR HANDLER:', error)
-
 	return fail(response, new InternalError())
 })
 
