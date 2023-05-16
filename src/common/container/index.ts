@@ -1,5 +1,6 @@
 import { container } from 'tsyringe'
-import './providers/token'
+
+import '../providers'
 
 import { IUserRepository } from 'modules/users/domain/user/IUserRepository'
 import { PrismaUserRepository } from 'modules/users/repositories/PrismaUserRepository'
