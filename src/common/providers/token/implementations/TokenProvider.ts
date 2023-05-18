@@ -2,9 +2,10 @@ import { sign, verify } from 'jsonwebtoken'
 
 import { TokenPayload } from '../ITokenPayload'
 import { ITokenProvider } from '../ITokenProvider'
-import { User } from 'modules/users/domain/user/User'
+import { User } from 'modules/identity/domain/user/User'
 
 import { authentication } from 'config/authentication'
+import { Account } from 'modules/identity/domain/account/Account'
 
 export class TokenProvider implements ITokenProvider {
 	public async decodeToken(token: string): Promise<TokenPayload> {
@@ -19,7 +20,8 @@ export class TokenProvider implements ITokenProvider {
 					resolve({
 						issued_at: Number(data.iat),
 						expires_in: Number(data.exp),
-						subject: String(data.sub)
+						subject: String(data.sub),
+						account_id: String(data.account_id)
 					})
 					return
 				}
@@ -29,10 +31,10 @@ export class TokenProvider implements ITokenProvider {
 		})
 	}
 
-	public signUserToken(user: User): string {
-		return sign({}, authentication.secret, {
+	public signUserToken(user: User, account: Account): string {
+		return sign({ account_id: account.id.value }, authentication.secret, {
 			subject: user.id.value,
-			expiresIn: '1m'
+			expiresIn: '31d'
 		})
 	}
 }
