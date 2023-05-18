@@ -1,20 +1,21 @@
 import { AggregateRoot } from 'common/seedword/domain/AggregateRoot'
-import { Either, right } from 'common/seedword/core/Either'
+import { Either, left, right } from 'common/seedword/core/Either'
 import { Violation } from 'common/seedword/domain/Violation'
 
 import { UUID } from 'common/seedword/domain/UUID'
 
 import { TransactionalPassword } from './TransactionalPassword'
+import { AccountStatus } from './AccountStatus'
 
 type AccountProperties = {
 	user_id: UUID
 	balance: number
 	account: string
 	agency: string
-	status: string
+	status: AccountStatus
 	transactional_password: TransactionalPassword
-	created_at: Date
-	updated_at: Date
+	created_at?: Date
+	updated_at?: Date
 	closed_at?: Date
 	blocked_at?: Date
 }
@@ -26,6 +27,20 @@ export class Account extends AggregateRoot<AccountProperties> {
 		super(properties, id)
 	}
 
+	decrementBalance(amount: number): Either<null, null> {
+		if (amount > this.props.balance) {
+			return left(null)
+		}
+
+		this.props.balance -= amount
+
+		return right(null)
+	}
+
+	incrementBalance(amount: number): void {
+		this.props.balance += amount
+	}
+
 	static generateAccountNumber(): string {
 		const timestamp = new Date().getTime()
 		const randomNumber = Math.floor(Math.random() * 900000) + 100000
@@ -34,37 +49,17 @@ export class Account extends AggregateRoot<AccountProperties> {
 	}
 
 	static create(properties: AccountProperties, id: UUID): Either<Violation[], Account> {
-		return right(
-			new Account(
-				{
-					user_id: properties.user_id,
-					balance: properties.balance,
-					account: properties.account,
-					agency: properties.agency,
-					status: properties.status,
-					transactional_password: properties.transactional_password,
-					created_at: properties.created_at,
-					updated_at: properties.updated_at,
-					closed_at: properties.closed_at,
-					blocked_at: properties.blocked_at
-				},
-				id
-			)
-		)
+		return right(new Account(properties, id))
 	}
 
 	static createNew(properties: CreateNewAccountProperties): Account {
-		const now = new Date()
-
 		return new Account({
 			user_id: properties.user_id,
 			balance: 0,
 			account: Account.generateAccountNumber(),
 			agency: '0001',
-			status: 'opened',
-			transactional_password: properties.transactional_password,
-			created_at: now,
-			updated_at: now
+			status: AccountStatus.create('OPEN'),
+			transactional_password: properties.transactional_password
 		})
 	}
 }

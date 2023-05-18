@@ -4,6 +4,7 @@ import { Account } from '../Account'
 import { UUID } from 'common/seedword/domain/UUID'
 import { TransactionalPassword } from '../TransactionalPassword'
 import { Violation } from 'common/seedword/domain/Violation'
+import { AccountStatus, AccountStatusEnum } from '../AccountStatus'
 
 type CreateAccountProperties = {
 	id: string
@@ -11,7 +12,7 @@ type CreateAccountProperties = {
 	balance: number
 	account: string
 	agency: string
-	status: string
+	status: keyof typeof AccountStatusEnum
 	transactional_password: string
 	created_at: Date
 	updated_at: Date
@@ -34,7 +35,7 @@ export function createAccount(properties: CreateAccountProperties): Either<Viola
 			balance: properties.balance,
 			account: properties.account,
 			agency: properties.agency,
-			status: properties.status,
+			status: AccountStatus.create(properties.status),
 			transactional_password: transactional_password.value,
 			created_at: properties.created_at,
 			updated_at: properties.updated_at,
