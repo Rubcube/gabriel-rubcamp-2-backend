@@ -7,6 +7,8 @@ import 'common/container'
 import { onboardingRouter } from './routes/onboardingRouter'
 import { authRouter } from './routes/authRouter'
 import { accountRouter } from './routes/accountRouter'
+import { internalTransferRouter } from './routes/internalTransferRouter'
+import { profileRouter } from './routes/profileRouter'
 
 import { fail } from 'common/utils/httpResponseUtil'
 import { InternalError } from 'common/errors/InternalError'
@@ -21,6 +23,8 @@ app.get('/health_check', (_, response) => response.send('Hello World!'))
 app.use('/onboarding', onboardingRouter)
 app.use('/auth', authRouter)
 app.use('/accounts', accountRouter)
+app.use('/internal_transfers', internalTransferRouter)
+app.use('/profile', profileRouter)
 
 app.use('*', (_, response) => {
 	return fail(response, new NotFoundError())
