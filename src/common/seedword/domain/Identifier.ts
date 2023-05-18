@@ -4,10 +4,6 @@ export abstract class Identifier<T> {
 	}
 
 	equals(id?: Identifier<T>): boolean {
-		if (!(id instanceof this.constructor)) {
-			return false
-		}
-
 		return id?.value === this.value
 	}
 
