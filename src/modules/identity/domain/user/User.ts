@@ -17,8 +17,8 @@ type UserProperties = {
 	document: Document
 	password: Password
 	address: Address
-	created_at: Date
-	updated_at: Date
+	created_at?: Date
+	updated_at?: Date
 }
 
 type CreateNewUserProperties = Omit<UserProperties, 'created_at' | 'updated_at'>
@@ -29,35 +29,10 @@ export class User extends AggregateRoot<UserProperties> {
 	}
 
 	static create(properties: UserProperties, id: UUID): User {
-		return new User(
-			{
-				name: properties.name,
-				email: properties.email,
-				birthday: properties.birthday,
-				phone: properties.phone,
-				document: properties.document,
-				password: properties.password,
-				address: properties.address,
-				created_at: properties.created_at,
-				updated_at: properties.updated_at
-			},
-			id
-		)
+		return new User(properties, id)
 	}
 
 	static createNew(properties: CreateNewUserProperties): User {
-		const now = new Date()
-
-		return new User({
-			name: properties.name,
-			email: properties.email,
-			birthday: properties.birthday,
-			phone: properties.phone,
-			document: properties.document,
-			password: properties.password,
-			address: properties.address,
-			created_at: now,
-			updated_at: now
-		})
+		return new User(properties)
 	}
 }

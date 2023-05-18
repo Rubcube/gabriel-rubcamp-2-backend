@@ -6,5 +6,5 @@ export type AddressDTO = {
 	number: string
 	complement: string
 	neighborhood: string
-	updated_at: string
+	updated_at?: string
 }

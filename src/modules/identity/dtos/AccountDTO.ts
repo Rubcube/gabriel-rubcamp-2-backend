@@ -5,8 +5,8 @@ export type AccountDTO = {
 	account: string
 	agency: string
 	status: string
-	created_at: string
-	updated_at: string
+	created_at?: string
+	updated_at?: string
 	closed_at: string | null
 	blocked_at: string | null
 }

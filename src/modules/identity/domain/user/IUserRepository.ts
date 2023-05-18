@@ -2,6 +2,7 @@ import { Account } from '../account/Account'
 import { User } from './User'
 
 export type IUserRepository = {
+	findByIdWithAccount: (id: string) => Promise<{ user: User; account: Account } | null>
 	findByDocument: (document: string) => Promise<User | null>
 	emailExists: (email: string) => Promise<boolean>
 	documentExists: (document: string) => Promise<boolean>

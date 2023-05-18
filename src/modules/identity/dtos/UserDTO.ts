@@ -14,6 +14,6 @@ export type UserDTO = {
 	phone: UserPhoneDTO
 	document: string
 	address: AddressDTO
-	created_at: string
-	updated_at: string
+	created_at?: string
+	updated_at?: string
 }
