@@ -1,6 +1,6 @@
 import { container } from 'tsyringe'
 import { Request, Response } from 'express'
-import { created, fail } from 'common/utils/httpResponseUtil'
+import { ok, fail } from 'common/utils/httpResponseUtil'
 
 import { LoginService } from 'modules/identity/service/LoginService'
 
@@ -16,7 +16,7 @@ export class AuthenticateController {
 		})
 
 		if (result.isRight()) {
-			return created(response, { token: result.value.token })
+			return ok(response, { token: result.value.token })
 		}
 
 		return fail(response, result.value)
