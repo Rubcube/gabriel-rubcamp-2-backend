@@ -58,7 +58,7 @@ export class LoginService {
 			return left(new ResourceNotFound())
 		}
 
-		const token = this.tokenProvider.signUserToken(user)
+		const token = this.tokenProvider.signUserToken(user, account)
 
 		return right({
 			token

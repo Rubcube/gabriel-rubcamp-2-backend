@@ -1,11 +1,55 @@
 import { prisma } from 'infrastructure/prisma/client'
 
-import { User } from '../domain/user/User'
-import { IUserRepository } from '../domain/user/IUserRepository'
-import { UserMapper } from '../mappers/UserMapper'
-import { Account } from '../domain/account/Account'
+import { User } from 'modules/identity/domain/user/User'
+import { UserMapper } from 'modules/identity/mappers/UserMapper'
+import { IUserRepository } from 'modules/identity/domain/user/IUserRepository'
+
+import { Account } from 'modules/identity/domain/account/Account'
+import { AccountMapper } from 'modules/identity/mappers/AccountMapper'
 
 export class PrismaUserRepository implements IUserRepository {
+	async findByIdWithAccount(id: string): Promise<{ user: User; account: Account } | null> {
+		const data = await prisma.user.findUnique({
+			where: {
+				id
+			},
+			include: {
+				account: true,
+				address: true
+			}
+		})
+
+		if (data == null || data.address == null || data.account == null) return null
+
+		return {
+			user: UserMapper.toDomain({
+				id: data.id,
+				name: data.name,
+				email: data.email,
+				birthday: data.birthday,
+				phone: data.phone,
+				document: data.document,
+				password: data.password,
+				address: data.address,
+				created_at: data.created_at,
+				updated_at: data.updated_at
+			}),
+			account: AccountMapper.toDomain({
+				id: data.account.id,
+				user_id: data.account.user_id,
+				balance: data.account.balance,
+				account: data.account.account,
+				agency: data.account.agency,
+				status: data.account.status,
+				transaction_password: data.account.transaction_password,
+				created_at: data.account.created_at,
+				updated_at: data.account.updated_at,
+				closed_at: data.account.closed_at,
+				blocked_at: data.account.blocked_at
+			})
+		}
+	}
+
 	async findByDocument(document?: string): Promise<User | null> {
 		const user = await prisma.user.findUnique({
 			where: {
@@ -80,8 +124,7 @@ export class PrismaUserRepository implements IUserRepository {
 						street: user.props.address.props.street,
 						number: user.props.address.props.number,
 						complement: user.props.address.props.complement,
-						neighborhood: user.props.address.props.neighborhood,
-						updated_at: user.props.address.props.updated_at.toISOString()
+						neighborhood: user.props.address.props.neighborhood
 					}
 				},
 				account: {
@@ -96,9 +139,7 @@ export class PrismaUserRepository implements IUserRepository {
 						closed_at: account.props.closed_at,
 						blocked_at: account.props.blocked_at
 					}
-				},
-				created_at: user.props.created_at.toISOString(),
-				updated_at: user.props.updated_at.toISOString()
+				}
 			}
 		})
 	}

@@ -7,7 +7,7 @@ import { InvalidOperationError } from 'common/errors/InvalidOperationError'
 import { User } from '../domain/user/User'
 import { IUserRepository } from '../domain/user/IUserRepository'
 
-import { Account } from 'modules/users/domain/account/Account'
+import { Account } from 'modules/identity/domain/account/Account'
 import { TransactionalPassword } from '../domain/account/TransactionalPassword'
 
 import { Name } from '../domain/user/Name'
