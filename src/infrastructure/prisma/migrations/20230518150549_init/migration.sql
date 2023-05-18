@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "AccountStatus" AS ENUM ('OPEN', 'CLOSED', 'PENDING_APPROVAL', 'BLOCKED');
+CREATE TYPE "AccountStatus" AS ENUM ('OPEN', 'CLOSED', 'BLOCKED');
 
 -- CreateEnum
 CREATE TYPE "InternalTranferStatus" AS ENUM ('COMPLETED', 'CANCELED', 'REJECTED', 'REFUNDED', 'SCHEDULED');
@@ -60,7 +60,7 @@ CREATE TABLE "internal_transfers" (
     "amount" INTEGER NOT NULL,
     "status" "InternalTranferStatus" NOT NULL,
     "scheduled_to" TIMESTAMP(3),
-    "created_at" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "internal_transfers_pkey" PRIMARY KEY ("id")

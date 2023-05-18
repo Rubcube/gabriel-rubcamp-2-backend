@@ -15,7 +15,7 @@ model User {
   id         String   @id @default(uuid())
   name       String
   email      String   @unique
-  birthday   String
+  birthday   DateTime @db.Date()
   phone      String   @unique
   document   String   @unique
   password   String
@@ -46,7 +46,6 @@ model Address {
 enum AccountStatus {
   OPEN
   CLOSED
-  PENDING_APPROVAL
   BLOCKED
 }
 
@@ -86,8 +85,8 @@ model InternalTransfer {
   recipient_account_id String
   amount               Int
   status               InternalTranferStatus
-  scheduled_to         DateTime?
-  created_at           DateTime
+  scheduled_to         DateTime?             @db.Date()
+  created_at           DateTime              @default(now())
   updated_at           DateTime              @updatedAt
 
   @@map("internal_transfers")
