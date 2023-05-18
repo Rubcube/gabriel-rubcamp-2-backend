@@ -7,37 +7,13 @@ import { prisma } from 'infrastructure/prisma/client'
 describe('POST /onboarding', () => {
 	afterEach(async () => {
 		await Promise.all([prisma.account.deleteMany(), prisma.address.deleteMany()])
-
 		await prisma.user.deleteMany()
 	})
 
 	it('should create onboarding with valid data', async () => {
 		const mock = userMock()
 
-		const response = await request(config.url)
-			.post('/onboarding')
-			.send({
-				name: mock.name,
-				email: mock.email,
-				birthday: mock.birthday,
-				phone: {
-					country_code: mock.phone.country_code,
-					area_code: mock.phone.area_code,
-					number: mock.phone.number
-				},
-				document: mock.document,
-				password: mock.password,
-				transactional_password: mock.transactional_password,
-				address: {
-					zipcode: '123',
-					city: 'Presidente Prudente',
-					state: 'SP',
-					street: 'Eufrásio Toledo',
-					number: '33',
-					complement: '',
-					neighborhood: 'Jardim Marupiara'
-				}
-			})
+		const response = await request(config.url).post('/onboarding').send(mock)
 
 		expect(response.status).toBe(201)
 	})
