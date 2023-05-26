@@ -30,7 +30,10 @@ type UserProperties = {
 	updated_at?: Date
 }
 
-type CreateNewUserProperties = Omit<UserProperties, 'created_at' | 'updated_at'>
+type CreateNewUserProperties = Omit<
+	UserProperties,
+	'created_at' | 'updated_at' | 'isPhoneVerified' | 'isEmailVerified' | 'verificationAttempts' | 'lastVerificationTry'
+>
 
 export class User extends AggregateRoot<UserProperties> {
 	private constructor(properties: UserProperties, id?: UUID) {
@@ -175,6 +178,11 @@ export class User extends AggregateRoot<UserProperties> {
 	}
 
 	static createNew(properties: CreateNewUserProperties): User {
-		return new User(properties)
+		return new User({
+			...properties,
+			isPhoneVerified: false,
+			isEmailVerified: false,
+			verificationAttempts: 0
+		})
 	}
 }

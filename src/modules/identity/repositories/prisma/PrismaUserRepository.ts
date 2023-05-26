@@ -29,6 +29,10 @@ export class PrismaUserRepository implements IUserRepository {
 			document: user.document,
 			password: user.password,
 			address: user.address,
+			isPhoneVerified: user.isPhoneVerified,
+			isEmailVerified: user.isEmailVerified,
+			verificationAttempts: user.verificationAttempts,
+			lastVerificationTry: user.lastVerificationTry,
 			created_at: user.created_at,
 			updated_at: user.updated_at
 		})
@@ -57,6 +61,10 @@ export class PrismaUserRepository implements IUserRepository {
 				document: data.document,
 				password: data.password,
 				address: data.address,
+				isPhoneVerified: data.isPhoneVerified,
+				isEmailVerified: data.isEmailVerified,
+				verificationAttempts: data.verificationAttempts,
+				lastVerificationTry: data.lastVerificationTry,
 				created_at: data.created_at,
 				updated_at: data.updated_at
 			}),
@@ -97,6 +105,10 @@ export class PrismaUserRepository implements IUserRepository {
 			document: user.document,
 			password: user.password,
 			address: user.address,
+			isPhoneVerified: user.isPhoneVerified,
+			isEmailVerified: user.isEmailVerified,
+			verificationAttempts: user.verificationAttempts,
+			lastVerificationTry: user.lastVerificationTry,
 			created_at: user.created_at,
 			updated_at: user.updated_at
 		})
