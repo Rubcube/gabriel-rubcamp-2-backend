@@ -1,6 +1,7 @@
 import { inject, injectable } from 'tsyringe'
 import { Either, left, right } from 'common/seedword/core/Either'
 
+import { AppError } from 'common/seedword/errors/AppError'
 import { InvalidParameterError } from 'common/errors/InvalidParameterError'
 import { ResourceNotFound } from 'common/errors/ResourceNotFoundError'
 
@@ -12,10 +13,10 @@ import { IUserRepository } from '../domain/user/IUserRepository'
 import { Account } from '../domain/account/Account'
 
 type Input = {
-	user_id: string
+	userId: string
 }
 
-type Output = Either<InvalidParameterError | ResourceNotFound, { user: User; account: Account }>
+type Output = Either<AppError, { user: User; account: Account }>
 
 @injectable()
 export class GetProfileService {
@@ -25,13 +26,13 @@ export class GetProfileService {
 	) {}
 
 	async execute(input: Input): Promise<Output> {
-		const user_id = UUID.createFrom({ value: input.user_id, field: 'user_id' })
+		const userId = UUID.createFrom({ value: input.userId, field: 'user_id' })
 
-		if (user_id.isLeft()) {
-			return left(new InvalidParameterError([user_id.value]))
+		if (userId.isLeft()) {
+			return left(new InvalidParameterError([userId.value]))
 		}
 
-		const result = await this.userRepository.findByIdWithAccount(user_id.value.value)
+		const result = await this.userRepository.findByIdWithAccount(userId.value.value)
 
 		if (result === null) {
 			return left(new ResourceNotFound())

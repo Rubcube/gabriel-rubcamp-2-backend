@@ -19,8 +19,8 @@ type InternalTransferProperties = {
 }
 
 export class InternalTransfer extends AggregateRoot<InternalTransferProperties> {
-	static create(properties: InternalTransferProperties): Either<Violation[], InternalTransfer> {
-		return right(new InternalTransfer(properties))
+	static create(properties: InternalTransferProperties, id: UUID): Either<Violation[], InternalTransfer> {
+		return right(new InternalTransfer(properties, id))
 	}
 
 	static createNew(properties: InternalTransferProperties): Either<Violation[], InternalTransfer> {

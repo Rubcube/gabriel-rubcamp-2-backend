@@ -1,6 +1,7 @@
 import { inject, injectable } from 'tsyringe'
 import { Either, left, right } from 'common/seedword/core/Either'
 
+import { AppError } from 'common/seedword/errors/AppError'
 import { InvalidParameterError } from 'common/errors/InvalidParameterError'
 import { ResourceNotFound } from 'common/errors/ResourceNotFoundError'
 
@@ -8,10 +9,10 @@ import { UUID } from 'common/seedword/domain/UUID'
 import { IAccountRepository } from '../domain/account/IAccountRepository'
 
 type Input = {
-	account_id: string
+	accountId: string
 }
 
-type Output = Either<InvalidParameterError | ResourceNotFound, number>
+type Output = Either<AppError, number>
 
 @injectable()
 export class GetBalanceService {
@@ -21,13 +22,13 @@ export class GetBalanceService {
 	) {}
 
 	async execute(input: Input): Promise<Output> {
-		const account_id = UUID.createFrom({ value: input.account_id, field: 'account_id' })
+		const accountId = UUID.createFrom({ value: input.accountId, field: 'account_id' })
 
-		if (account_id.isLeft()) {
-			return left(new InvalidParameterError([account_id.value]))
+		if (accountId.isLeft()) {
+			return left(new InvalidParameterError([accountId.value]))
 		}
 
-		const balance = await this.accountRepository.findBalanceById(input.account_id)
+		const balance = await this.accountRepository.findBalanceById(input.accountId)
 
 		if (balance === null) {
 			return left(new ResourceNotFound())

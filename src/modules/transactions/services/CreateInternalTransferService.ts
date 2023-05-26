@@ -3,9 +3,9 @@ import { combineLefts, Either, left, right } from 'common/seedword/core/Either'
 import { UUID } from 'common/seedword/domain/UUID'
 import { AppError } from 'common/seedword/errors/AppError'
 
+import { Violation } from 'common/seedword/domain/Violation'
 import { InvalidParameterError } from 'common/errors/InvalidParameterError'
 import { InsufficientFundsError } from 'common/errors/InsufficientFundsError'
-import { BlockedAccountError } from 'common/errors/BlockedAccountError'
 import { InvalidOperationError } from 'common/errors/InvalidOperationError'
 import { WrongTransactionalPasswordError } from 'common/errors/WrongTransactionalPassword'
 import { ResourceNotFound } from 'common/errors/ResourceNotFoundError'
@@ -14,12 +14,11 @@ import { InternalTransfer } from '../domain/internal_transfer/InternalTransfer'
 import { InternalTransferStatus } from '../domain/internal_transfer/InternalTransferStatus'
 import { IInternalTransferRepository } from '../domain/internal_transfer/IInternalTransferRepository'
 import { Amount } from '../domain/internal_transfer/Amount'
+import { ScheduledTo } from '../domain/internal_transfer/ScheduledTo'
 
 import { TransactionalPassword } from 'modules/identity/domain/account/TransactionalPassword'
 import { IAccountRepository } from 'modules/identity/domain/account/IAccountRepository'
 import { AccountStatusEnum } from 'modules/identity/domain/account/AccountStatus'
-import { Violation } from 'common/seedword/domain/Violation'
-import { ScheduledTo } from '../domain/internal_transfer/ScheduledTo'
 
 type Input = {
 	transactionalPassword: string
@@ -63,7 +62,7 @@ export class CreateInternalTransferService {
 		}
 
 		if (senderAccount.props.status.props.value !== AccountStatusEnum.OPEN) {
-			return left(new BlockedAccountError())
+			return left(new InvalidOperationError())
 		}
 
 		if (!senderAccount.props.transactional_password.equals(transactionalPassword.value)) {
@@ -77,7 +76,7 @@ export class CreateInternalTransferService {
 		}
 
 		if (recipientAccount.props.status.props.value !== AccountStatusEnum.OPEN) {
-			return left(new BlockedAccountError())
+			return left(new InvalidOperationError())
 		}
 
 		let internalTransfer: Either<Violation[], InternalTransfer>

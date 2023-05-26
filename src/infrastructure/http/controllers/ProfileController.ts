@@ -8,11 +8,11 @@ import { AccountMapper } from 'modules/identity/mappers/AccountMapper'
 
 export class ProfileController {
 	async get(request: Request, response: Response): Promise<Response> {
-		const { user_id } = request.params
+		const userId = request.userId
 
 		const service = container.resolve(GetProfileService)
 
-		const result = await service.execute({ user_id })
+		const result = await service.execute({ userId })
 
 		if (result.isRight()) {
 			return ok(response, {

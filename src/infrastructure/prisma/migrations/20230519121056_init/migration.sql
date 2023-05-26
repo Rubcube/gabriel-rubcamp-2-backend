@@ -9,7 +9,7 @@ CREATE TABLE "users" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
-    "birthday" TEXT NOT NULL,
+    "birthday" DATE NOT NULL,
     "phone" TEXT NOT NULL,
     "document" TEXT NOT NULL,
     "password" TEXT NOT NULL,
@@ -59,7 +59,7 @@ CREATE TABLE "internal_transfers" (
     "recipient_account_id" TEXT NOT NULL,
     "amount" INTEGER NOT NULL,
     "status" "InternalTranferStatus" NOT NULL,
-    "scheduled_to" TIMESTAMP(3),
+    "scheduled_to" DATE,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 

@@ -22,21 +22,29 @@ export class Document extends ValueObject<DocumentProperties> {
 			return false
 		}
 
-		let soma = 0
-		for (let i = 0; i < 9; i++) {
-			soma += parseInt(properties.value.charAt(i)) * (10 - i)
+		let sum
+		let rest
+		sum = 0
+
+		for (let i = 1; i <= 9; i++) {
+			sum = sum + parseInt(properties.value.substring(i - 1, i)) * (11 - i)
 		}
+		rest = (sum * 10) % 11
 
-		const digit1 = soma % 11 > 2 ? 11 - (soma % 11) : 0
+		if (rest === 10 || rest === 11) rest = 0
+		if (rest !== parseInt(properties.value.substring(9, 10))) return false
 
-		soma = 0
-		for (let i = 0; i < 10; i++) {
-			soma += parseInt(properties.value.charAt(i)) * (11 - i)
+		sum = 0
+		for (let i = 1; i <= 10; i++) {
+			sum = sum + parseInt(properties.value.substring(i - 1, i)) * (12 - i)
 		}
+		rest = (sum * 10) % 11
 
-		const digit2 = soma % 11 > 2 ? 11 - (soma % 11) : 0
+		if (rest === 10 || rest === 11) rest = 0
 
-		return properties.value === `${properties.value.substring(0, 9)}${digit1}${digit2}`
+		if (rest !== parseInt(properties.value.substring(10, 11))) return false
+
+		return true
 	}
 
 	static create(value: string): Either<Violation, Document> {

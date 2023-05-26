@@ -1,11 +1,28 @@
 import { container } from 'tsyringe'
 import { Request, Response } from 'express'
-import { ok, fail } from 'common/utils/httpResponseUtil'
+import { fail, created, ok } from 'common/utils/httpResponseUtil'
 
-import { CreateInternalTransferService } from 'modules/transactions/services/CreateInternalTransferService'
 import { InternalTransferMapper } from 'modules/transactions/mappers/InternalTransferMapper'
 
+import { GetInternalTransferService } from 'modules/transactions/services/GetInternalTransferService'
+import { CreateInternalTransferService } from 'modules/transactions/services/CreateInternalTransferService'
+
 export class InternalTransferController {
+	async get(request: Request, response: Response): Promise<Response> {
+		const requesterAccountId = request.accountId
+		const internalTransferId = request.params.internal_transfer_id
+
+		const service = container.resolve(GetInternalTransferService)
+
+		const result = await service.execute({ internalTransferId, requesterAccountId })
+
+		if (result.isRight()) {
+			return ok(response, InternalTransferMapper.toDTO(result.value))
+		}
+
+		return fail(response, result.value)
+	}
+
 	async create(request: Request, response: Response): Promise<Response> {
 		const accountId = request.accountId
 		const recipientAccountId = request.body.recipient_account_id
@@ -24,7 +41,7 @@ export class InternalTransferController {
 		})
 
 		if (result.isRight()) {
-			return ok(response, InternalTransferMapper.toDTO(result.value))
+			return created(response, InternalTransferMapper.toDTO(result.value))
 		}
 
 		return fail(response, result.value)

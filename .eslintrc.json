@@ -4,13 +4,12 @@
 		"node": true,
 		"jest": true
 	},
-	"extends": ["standard-with-typescript", "eslint:recommended", "prettier"],
-	"overrides": [],
 	"parserOptions": {
 		"ecmaVersion": "latest",
 		"sourceType": "module",
 		"project": "./tsconfig.json"
 	},
+	"extends": ["eslint:recommended", "standard-with-typescript", "prettier"],
 	"rules": {
 		"no-unused-vars": "off",
 		"@typescript-eslint/no-unused-vars": ["error"],

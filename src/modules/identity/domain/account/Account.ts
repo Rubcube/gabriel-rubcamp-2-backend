@@ -58,7 +58,7 @@ export class Account extends AggregateRoot<AccountProperties> {
 			balance: 0,
 			account: Account.generateAccountNumber(),
 			agency: '0001',
-			status: AccountStatus.create('OPEN'),
+			status: AccountStatus.create('PENDING_VERIFICATION'),
 			transactional_password: properties.transactional_password
 		})
 	}

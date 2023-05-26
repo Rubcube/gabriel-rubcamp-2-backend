@@ -3,7 +3,8 @@ import { ValueObject } from 'common/seedword/domain/ValueObject'
 export enum AccountStatusEnum {
 	OPEN = 'OPEN',
 	CLOSED = 'CLOSED',
-	BLOCKED = 'BLOCKED'
+	BLOCKED = 'BLOCKED',
+	PENDING_VERIFICATION = 'PENDING_VERIFICATION'
 }
 
 type AccountStatusProperties = {

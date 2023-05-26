@@ -1,4 +1,5 @@
 import { User as PrismaUser, Address as PrismaAddress } from '@prisma/client'
+import moment from 'moment'
 
 import { createUser } from '../domain/user/factories/createUser'
 
@@ -11,7 +12,7 @@ export class UserMapper {
 			id: payload.id,
 			name: payload.name,
 			email: payload.email,
-			birthday: payload.birthday,
+			birthday: moment(payload.birthday).format('YYYY-MM-DD'),
 			phone: {
 				country_code: payload.phone.substring(0, 2),
 				area_code: payload.phone.substring(2, 4),
@@ -32,6 +33,10 @@ export class UserMapper {
 				neighborhood: payload.address.neighborhood,
 				updated_at: payload.address.updated_at
 			},
+			isPhoneVerified: payload.isPhoneVerified,
+			isEmailVerified: payload.isEmailVerified,
+			verificationAttempts: payload.verificationAttempts,
+			lastVerificationTry: payload.lastVerificationTry ?? undefined,
 			created_at: payload.created_at,
 			updated_at: payload.updated_at
 		})

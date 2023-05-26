@@ -1,4 +1,4 @@
-import { prisma } from 'infrastructure/prisma/client'
+import prisma from 'infrastructure/prisma/client'
 
 import { User } from 'modules/identity/domain/user/User'
 import { UserMapper } from 'modules/identity/mappers/UserMapper'
@@ -8,6 +8,32 @@ import { Account } from 'modules/identity/domain/account/Account'
 import { AccountMapper } from 'modules/identity/mappers/AccountMapper'
 
 export class PrismaUserRepository implements IUserRepository {
+	async findById(id: string): Promise<User | null> {
+		const user = await prisma.user.findUnique({
+			where: {
+				id
+			},
+			include: {
+				address: true
+			}
+		})
+
+		if (user == null || user.address == null) return null
+
+		return UserMapper.toDomain({
+			id: user.id,
+			name: user.name,
+			email: user.email,
+			birthday: user.birthday,
+			phone: user.phone,
+			document: user.document,
+			password: user.password,
+			address: user.address,
+			created_at: user.created_at,
+			updated_at: user.updated_at
+		})
+	}
+
 	async findByIdWithAccount(id: string): Promise<{ user: User; account: Account } | null> {
 		const data = await prisma.user.findUnique({
 			where: {
@@ -110,21 +136,21 @@ export class PrismaUserRepository implements IUserRepository {
 		await prisma.user.create({
 			data: {
 				id: user.id.value,
-				name: user.props.name.value,
-				email: user.props.email.value,
-				birthday: user.props.birthday.value,
-				phone: user.props.phone.parsed,
-				document: user.props.document.value,
-				password: await user.props.password.getHashedValue(),
+				name: user.name.value,
+				email: user.email.value,
+				birthday: new Date(user.birthday.value).toISOString(),
+				phone: user.phone.parsed,
+				document: user.document.value,
+				password: await user.password.getHashedValue(),
 				address: {
 					create: {
-						zipcode: user.props.address.props.zipcode,
-						city: user.props.address.props.city,
-						state: user.props.address.props.state,
-						street: user.props.address.props.street,
-						number: user.props.address.props.number,
-						complement: user.props.address.props.complement,
-						neighborhood: user.props.address.props.neighborhood
+						zipcode: user.address.props.zipcode,
+						city: user.address.props.city,
+						state: user.address.props.state,
+						street: user.address.props.street,
+						number: user.address.props.number,
+						complement: user.address.props.complement,
+						neighborhood: user.address.props.neighborhood
 					}
 				},
 				account: {
@@ -132,12 +158,39 @@ export class PrismaUserRepository implements IUserRepository {
 						balance: account.props.balance,
 						account: account.props.account,
 						agency: account.props.agency,
-						status: 'OPEN',
+						status: account.props.status.props.value,
 						transaction_password: account.props.transactional_password.value,
 						created_at: account.props.created_at,
 						updated_at: account.props.updated_at,
 						closed_at: account.props.closed_at,
 						blocked_at: account.props.blocked_at
+					}
+				}
+			}
+		})
+	}
+
+	async save(user: User): Promise<void> {
+		await prisma.user.update({
+			where: {
+				id: user.id.value
+			},
+			data: {
+				name: user.name.value,
+				email: user.email.value,
+				birthday: new Date(user.birthday.value).toISOString(),
+				phone: `${user.phone.country_code}${user.phone.area_code}${user.phone.number}`,
+				document: user.document.value,
+				password: await user.password.getHashedValue(),
+				address: {
+					update: {
+						zipcode: user.props.address.props.zipcode,
+						city: user.props.address.props.city,
+						state: user.props.address.props.state,
+						street: user.props.address.props.street,
+						number: user.props.address.props.number,
+						complement: user.props.address.props.complement,
+						neighborhood: user.props.address.props.neighborhood
 					}
 				}
 			}

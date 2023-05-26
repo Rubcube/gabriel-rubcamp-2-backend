@@ -1,8 +1,8 @@
 import { ValueObject } from 'common/seedword/domain/ValueObject'
 
 export enum TransactionTypeEnum {
-	TRANSFER_INBOUND = 'TRANSFER_INBOUND',
-	TRANSFER_OUTBOUND = 'TRANSFER_OUTBOUND'
+	INTERNAL_TRANSFER_INBOUND = 'INTERNAL_TRANSFER_INBOUND',
+	INTERNAL_TRANSFER_OUTBOUND = 'TRANSFER_OUTBOUND'
 }
 
 type TransactionTypeProperties = {

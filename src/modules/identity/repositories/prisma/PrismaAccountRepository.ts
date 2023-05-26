@@ -1,4 +1,4 @@
-import { prisma } from 'infrastructure/prisma/client'
+import prisma from 'infrastructure/prisma/client'
 
 import { Account } from 'modules/identity/domain/account/Account'
 import { AccountMapper } from 'modules/identity/mappers/AccountMapper'

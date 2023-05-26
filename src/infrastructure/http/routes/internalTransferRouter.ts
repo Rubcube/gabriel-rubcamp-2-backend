@@ -6,7 +6,7 @@ import { InternalTransferController } from '../controllers/InternalTransferContr
 const internalTransferRouter = Router()
 const internalTransferController = new InternalTransferController()
 
-internalTransferRouter.use(ensureAuthentication)
-internalTransferRouter.post('/', internalTransferController.create)
+internalTransferRouter.post('/', ensureAuthentication, internalTransferController.create)
+internalTransferRouter.get('/:internal_transfer_id', ensureAuthentication, internalTransferController.get)
 
 export { internalTransferRouter }

@@ -37,6 +37,10 @@ type CreateUserProperties = {
 		neighborhood: string
 		updated_at: Date
 	}
+	isPhoneVerified: boolean
+	isEmailVerified: boolean
+	verificationAttempts: number
+	lastVerificationTry?: Date
 	created_at: Date
 	updated_at: Date
 }
@@ -78,6 +82,10 @@ export function createUser(properties: CreateUserProperties): Either<Violation[]
 				document: document.value,
 				password: password.value,
 				address: address.value,
+				isPhoneVerified: properties.isPhoneVerified,
+				isEmailVerified: properties.isEmailVerified,
+				verificationAttempts: properties.verificationAttempts,
+				lastVerificationTry: properties.lastVerificationTry,
 				created_at: properties.created_at,
 				updated_at: properties.updated_at
 			},

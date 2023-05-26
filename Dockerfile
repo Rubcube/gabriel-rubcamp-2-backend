@@ -9,6 +9,9 @@ COPY . .
 # Install app dependencies
 RUN yarn install
 
+# prisma global
+RUN npm i -g prisma
+
 # Exposes server main port
 EXPOSE 3344
 

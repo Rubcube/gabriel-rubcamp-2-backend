@@ -4,7 +4,7 @@ import { Either, right, left } from '../core/Either'
 
 import { Violation } from './Violation'
 import { WrongTypeViolation } from 'common/domain/violations/WrongTypeViolation'
-import { WrongUUIViolation } from 'common/domain/violations/WrongUUIDViolation'
+import { WrongUUIDViolation } from 'common/domain/violations/WrongUUIDViolation'
 
 export class UUID extends Identifier<string> {
 	constructor(id?: string) {
@@ -21,7 +21,7 @@ export class UUID extends Identifier<string> {
 		}
 
 		if (!this.isValid(properties.value)) {
-			return left(new WrongUUIViolation(properties.field))
+			return left(new WrongUUIDViolation(properties.field))
 		}
 
 		return right(new UUID(properties.value))
