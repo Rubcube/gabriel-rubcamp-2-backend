@@ -9,3 +9,8 @@ COPY . .
 # Install app dependencies
 RUN yarn install
 
+# Exposes server main port
+EXPOSE 3344
+
+# Run server
+ENTRYPOINT ["yarn", "start"]
