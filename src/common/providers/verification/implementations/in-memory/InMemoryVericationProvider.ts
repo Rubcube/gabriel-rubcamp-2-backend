@@ -24,9 +24,9 @@ export class InMemoryVerificationProvider implements IVerificationProvider {
 		return true
 	}
 
-	async checkVerification(input: CheckVerificationInput): Promise<Channel | undefined> {
+	async checkVerification(input: CheckVerificationInput): Promise<boolean> {
 		const check = this.verifications.find(value => value.to === input.to && value.code === input.code)
 
-		return check ? check.channel : undefined
+		return !!check
 	}
 }

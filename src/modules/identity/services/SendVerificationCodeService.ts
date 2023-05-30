@@ -4,9 +4,9 @@ import { Either, left, right } from 'common/seedword/core/Either'
 
 import { AppError } from 'common/seedword/errors/AppError'
 
-import { InternalError } from 'common/errors/InternalError'
 import { ResourceNotFound } from 'common/errors/ResourceNotFoundError'
 import { InvalidOperationError } from 'common/errors/InvalidOperationError'
+import { VerificationProviderError } from 'common/errors/VerificationProviderError'
 import { MaxVerificationAttemptsError } from 'common/errors/MaxVerificationAttemptsError'
 
 import { IUserRepository } from '../domain/user/IUserRepository'
@@ -67,7 +67,7 @@ export class SendVerificationCodeService {
 		})
 
 		if (!result) {
-			return left(new InternalError())
+			return left(new VerificationProviderError())
 		}
 
 		await this.userRepository.addVerificationAttempt(data.user)
