@@ -77,15 +77,11 @@ export class User extends AggregateRoot<UserProperties> {
 		return this.props.document
 	}
 
-	set document(value: Document) {
-		this.props.document = value
-	}
-
 	get password(): Password {
 		return this.props.password
 	}
 
-	set password(value: Password) {
+	private set password(value: Password) {
 		this.props.password = value
 	}
 
