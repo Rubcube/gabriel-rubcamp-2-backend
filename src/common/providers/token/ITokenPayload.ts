@@ -3,4 +3,5 @@ export type TokenPayload = {
 	expires_in: number
 	subject: string
 	account_id: string
+	type: 'auth' | 'reset'
 }

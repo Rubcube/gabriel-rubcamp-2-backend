@@ -68,6 +68,8 @@ export class UserMapper {
 				neighborhood: user.props.address.props.neighborhood,
 				updated_at: user.props.address.props.updated_at.toISOString()
 			},
+			isEmailVerified: user.isEmailVerified,
+			isPhoneVerified: user.isPhoneVerified,
 			created_at: user.props.created_at?.toISOString(),
 			updated_at: user.props.updated_at?.toISOString()
 		}

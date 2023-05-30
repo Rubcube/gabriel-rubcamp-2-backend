@@ -14,6 +14,8 @@ export type UserDTO = {
 	phone: UserPhoneDTO
 	document: string
 	address: AddressDTO
+	isPhoneVerified: boolean
+	isEmailVerified: boolean
 	created_at?: string
 	updated_at?: string
 }

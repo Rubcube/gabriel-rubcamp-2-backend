@@ -2,7 +2,7 @@ import { container } from 'tsyringe'
 import { Request, Response } from 'express'
 import { ok, fail } from 'common/utils/httpResponseUtil'
 
-import { GetProfileService } from 'modules/identity/service/GetProfileService'
+import { GetProfileService } from 'modules/identity/services/GetProfileService'
 import { UserMapper } from 'modules/identity/mappers/UserMapper'
 import { AccountMapper } from 'modules/identity/mappers/AccountMapper'
 

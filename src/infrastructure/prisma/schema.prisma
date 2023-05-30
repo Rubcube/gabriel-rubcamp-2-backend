@@ -51,6 +51,7 @@ enum AccountStatus {
   OPEN
   CLOSED
   BLOCKED
+  LOCKED
   PENDING_VERIFICATION
 }
 
@@ -63,6 +64,7 @@ model Account {
   agency               String
   status               AccountStatus
   transaction_password String
+  login_attempts       Int           @default(0)
   created_at           DateTime      @default(now())
   updated_at           DateTime      @updatedAt
   closed_at            DateTime?

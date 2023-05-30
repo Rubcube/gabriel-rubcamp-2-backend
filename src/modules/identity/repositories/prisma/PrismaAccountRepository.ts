@@ -37,4 +37,16 @@ export class PrismaAccountRepository implements IAccountRepository {
 
 		return account ? account.balance : null
 	}
+
+	async addLoginAttempt(account: Account): Promise<void> {
+		await prisma.account.update({
+			where: {
+				id: account.id.value
+			},
+			data: {
+				login_attempts: account.props.loginAttempts,
+				status: account.props.status.props.value
+			}
+		})
+	}
 }

@@ -4,7 +4,7 @@ import { ok, fail } from 'common/utils/httpResponseUtil'
 
 import { TransactionMapper } from 'modules/transactions/mappers/TransactionMapper'
 
-import { GetBalanceService } from 'modules/identity/service/GetBalanceService'
+import { GetBalanceService } from 'modules/identity/services/GetBalanceService'
 import { GetStatementService } from 'modules/transactions/services/GetStatementService'
 
 export class AccountController {

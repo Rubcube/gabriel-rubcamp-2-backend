@@ -4,6 +4,7 @@ export enum AccountStatusEnum {
 	OPEN = 'OPEN',
 	CLOSED = 'CLOSED',
 	BLOCKED = 'BLOCKED',
+	LOCKED = 'LOCKED',
 	PENDING_VERIFICATION = 'PENDING_VERIFICATION'
 }
 

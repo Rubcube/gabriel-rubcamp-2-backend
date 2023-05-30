@@ -12,6 +12,12 @@ export function created(expressResponse: Response, payload?: Record<string, any>
 	return payload ? expressResponse.status(201).json(payload) : expressResponse.status(201).send()
 }
 
+export function tooMany(expressResponse: Response, payload: AppError): Response {
+	return payload
+		? expressResponse.status(429).json(parseAppErrorToHTTPError(payload))
+		: expressResponse.status(429).send()
+}
+
 export function fail(expressResponse: Response, payload: AppError): Response {
 	switch (payload.code) {
 		case AppErrorCodes.RESOURCE_NOT_FOUND:

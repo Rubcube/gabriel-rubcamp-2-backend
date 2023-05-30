@@ -84,11 +84,13 @@ export class CreateOnboardingService {
 		}
 
 		const documentAlreadyExists = await this.userRepository.documentExists(input.document)
+
 		if (documentAlreadyExists) {
 			return left(new InvalidOperationError())
 		}
 
 		const emailAlreadyExists = await this.userRepository.emailExists(input.document)
+
 		if (emailAlreadyExists) {
 			return left(new InvalidOperationError())
 		}
@@ -98,6 +100,7 @@ export class CreateOnboardingService {
 			area_code: input.phone.area_code,
 			number: input.phone.number
 		})
+
 		if (phoneAlreadyExists) {
 			return left(new InvalidOperationError())
 		}

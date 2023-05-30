@@ -14,6 +14,7 @@ type AccountProperties = {
 	agency: string
 	status: AccountStatus
 	transactional_password: TransactionalPassword
+	loginAttempts: number
 	created_at?: Date
 	updated_at?: Date
 	closed_at?: Date
@@ -41,6 +42,58 @@ export class Account extends AggregateRoot<AccountProperties> {
 		this.props.balance += amount
 	}
 
+	get status(): AccountStatus {
+		return this.props.status
+	}
+
+	set status(value: AccountStatus) {
+		this.props.status = value
+	}
+
+	statusToPendingVerification() {
+		this.props.status = AccountStatus.create('PENDING_VERIFICATION')
+	}
+
+	open() {
+		this.props.status = AccountStatus.create('OPEN')
+	}
+
+	canLogin() {
+		if (this.isOpen() || this.isPendingVerification()) {
+			return true
+		}
+
+		return false
+	}
+
+	addLoginAttempt() {
+		if (this.props.loginAttempts === 4) {
+			this.props.status = AccountStatus.create('BLOCKED')
+		}
+
+		this.props.loginAttempts++
+	}
+
+	isOpen(): boolean {
+		return this.props.status.props.value === 'OPEN'
+	}
+
+	isClosed(): boolean {
+		return this.props.status.props.value === 'CLOSED'
+	}
+
+	isBlocked(): boolean {
+		return this.props.status.props.value === 'BLOCKED'
+	}
+
+	isLocked(): boolean {
+		return this.props.status.props.value === 'LOCKED'
+	}
+
+	isPendingVerification(): boolean {
+		return this.props.status.props.value === 'PENDING_VERIFICATION'
+	}
+
 	static generateAccountNumber(): string {
 		const timestamp = new Date().getTime()
 		const randomNumber = Math.floor(Math.random() * 900000) + 100000
@@ -59,7 +112,8 @@ export class Account extends AggregateRoot<AccountProperties> {
 			account: Account.generateAccountNumber(),
 			agency: '0001',
 			status: AccountStatus.create('PENDING_VERIFICATION'),
-			transactional_password: properties.transactional_password
+			transactional_password: properties.transactional_password,
+			loginAttempts: 0
 		})
 	}
 }

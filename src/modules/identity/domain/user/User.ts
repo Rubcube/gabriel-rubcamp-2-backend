@@ -1,3 +1,4 @@
+import moment from 'moment'
 import { AggregateRoot } from 'common/seedword/domain/AggregateRoot'
 import { Violation } from 'common/seedword/domain/Violation'
 import { Either, left, right } from 'common/seedword/core/Either'
@@ -101,30 +102,36 @@ export class User extends AggregateRoot<UserProperties> {
 	}
 
 	get isPhoneVerified(): boolean {
-		return this.isPhoneVerified
+		return this.props.isPhoneVerified
 	}
 
 	set isPhoneVerified(value: boolean) {
-		this.isPhoneVerified = value
+		this.props.isPhoneVerified = value
 	}
 
 	get isEmailVerified(): boolean {
-		return this.isEmailVerified
+		return this.props.isEmailVerified
 	}
 
 	set isEmailVerified(value: boolean) {
-		this.isEmailVerified = value
+		this.props.isEmailVerified = value
 	}
 
 	get verificationAttempts(): number {
 		return this.props.verificationAttempts
 	}
 
-	addVerificationAttempt(): void {
+	set verificationAttempts(value: number) {
+		this.props.verificationAttempts = value
+	}
+
+	private addVerificationAttempt(): void {
+		this.lastVerificationTry = new Date()
 		this.props.verificationAttempts++
 	}
 
-	cleanVerificationAttempts(): void {
+	private cleanVerificationAttempts(): void {
+		this.lastVerificationTry = undefined
 		this.props.verificationAttempts = 0
 	}
 
@@ -134,6 +141,64 @@ export class User extends AggregateRoot<UserProperties> {
 
 	set lastVerificationTry(value: Date | undefined) {
 		this.props.lastVerificationTry = value
+	}
+
+	private canPerformVerification(): boolean {
+		const lastTryMoment = moment(this.lastVerificationTry)
+
+		switch (this.verificationAttempts) {
+			case 0:
+				return true
+			case 1:
+				return moment().isAfter(lastTryMoment.add(1, 'minute'))
+			case 2:
+				return moment().isAfter(lastTryMoment.add(2, 'minute'))
+			case 3:
+				return moment().isAfter(lastTryMoment.add(6, 'minute'))
+			case 4:
+				return moment().isAfter(lastTryMoment.add(24, 'minute'))
+			default:
+				return moment().isAfter(lastTryMoment.add(60, 'minute'))
+		}
+	}
+
+	public retryVerificationAfter(): Date {
+		const lastTryMoment = moment(this.lastVerificationTry)
+
+		switch (this.verificationAttempts) {
+			case 0:
+				return moment().toDate()
+			case 1:
+				return lastTryMoment.add(1, 'minute').toDate()
+			case 2:
+				return lastTryMoment.add(2, 'minute').toDate()
+			case 3:
+				return lastTryMoment.add(6, 'minute').toDate()
+			case 4:
+				return lastTryMoment.add(24, 'minute').toDate()
+			default:
+				return lastTryMoment.add(60, 'minute').toDate()
+		}
+	}
+
+	public tryAddVerificationAttempt(): boolean {
+		if (!this.canPerformVerification()) return false
+
+		this.addVerificationAttempt()
+
+		return true
+	}
+
+	public verifyPhone() {
+		this.cleanVerificationAttempts()
+
+		this.isPhoneVerified = true
+	}
+
+	public verifyEmail() {
+		this.cleanVerificationAttempts()
+
+		this.isEmailVerified = true
 	}
 
 	get created_at(): Date | undefined {
@@ -153,7 +218,6 @@ export class User extends AggregateRoot<UserProperties> {
 	}
 
 	public async changePassword(oldPassword: string, password: string): Promise<Either<Violation, null>> {
-		console.log(await this.password.comparePassword(oldPassword))
 		if (oldPassword === password) {
 			return left(new NewPasswordEqualOldViolation())
 		}

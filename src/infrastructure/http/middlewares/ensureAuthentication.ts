@@ -17,7 +17,7 @@ export const ensureAuthentication = async (request: Request, response: Response,
 	try {
 		const tokenProvider = container.resolve<TokenProvider>('TokenProvider')
 
-		const payload = await tokenProvider.decodeToken(token)
+		const payload = await tokenProvider.decodeAuthToken(token)
 
 		request.userId = payload.subject
 		request.accountId = payload.account_id

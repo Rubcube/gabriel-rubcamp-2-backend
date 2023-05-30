@@ -43,7 +43,7 @@ export class UpdateUserPasswordService {
 			return left(new InvalidParameterError([changePasswordResult.value]))
 		}
 
-		await this.userRepository.save(user)
+		await this.userRepository.updatePassword(user)
 
 		return right(null)
 	}

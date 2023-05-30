@@ -10,7 +10,8 @@ export function parseAppErrorToHTTPError(appError: AppError): HTTPError {
 				code: value.code,
 				field: value.field,
 				message: value.message,
-				value: value.value
+				value: value.value,
+				...(value.expectedValues && { expected_values: value.expectedValues })
 			}
 		})
 	}

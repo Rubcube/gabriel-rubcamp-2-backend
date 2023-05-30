@@ -47,7 +47,7 @@ services:
     container_name: web_test
     build:
       dockerfile: Dockerfile.dev
-    command: yarn test
+    command: yarn test:unit
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules

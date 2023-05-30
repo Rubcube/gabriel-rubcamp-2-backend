@@ -18,7 +18,6 @@ import { ScheduledTo } from '../domain/internal_transfer/ScheduledTo'
 
 import { TransactionalPassword } from 'modules/identity/domain/account/TransactionalPassword'
 import { IAccountRepository } from 'modules/identity/domain/account/IAccountRepository'
-import { AccountStatusEnum } from 'modules/identity/domain/account/AccountStatus'
 
 type Input = {
 	transactionalPassword: string
@@ -61,7 +60,7 @@ export class CreateInternalTransferService {
 			return left(new ResourceNotFound())
 		}
 
-		if (senderAccount.props.status.props.value !== AccountStatusEnum.OPEN) {
+		if (!senderAccount.isOpen()) {
 			return left(new InvalidOperationError())
 		}
 
@@ -75,7 +74,7 @@ export class CreateInternalTransferService {
 			return left(new ResourceNotFound())
 		}
 
-		if (recipientAccount.props.status.props.value !== AccountStatusEnum.OPEN) {
+		if (!recipientAccount.isOpen()) {
 			return left(new InvalidOperationError())
 		}
 

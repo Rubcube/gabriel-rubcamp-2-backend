@@ -2,7 +2,7 @@ import { container } from 'tsyringe'
 import { Request, Response } from 'express'
 import { created, fail } from 'common/utils/httpResponseUtil'
 
-import { CreateOnboardingService } from 'modules/identity/service/OnboardingService'
+import { CreateOnboardingService } from 'modules/identity/services/OnboardingService'
 
 export class OnboardingController {
 	async create(request: Request, response: Response): Promise<Response> {

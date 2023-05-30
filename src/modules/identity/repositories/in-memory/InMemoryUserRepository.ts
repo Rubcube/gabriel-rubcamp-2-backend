@@ -9,6 +9,24 @@ export class InMemoryUserRepository implements IUserRepository {
 
 	constructor(private readonly accountRepository: InMemoryAccountRepository) {}
 
+	async findById(id: string): Promise<User | null> {
+		const user = this.users.find(user => user.id.value === id)
+
+		return user ?? null
+	}
+
+	async findByIdWithAccount(id: string): Promise<{ user: User; account: Account } | null> {
+		const user = this.users.find(user => user.id.value === id)
+
+		if (!user) return null
+
+		const account = await this.accountRepository.findById(user.id.value)
+
+		if (!account) return null
+
+		return { user, account }
+	}
+
 	async findByDocument(document?: string): Promise<User | null> {
 		const user = this.users.find(user => user.props.document.value === document)
 
@@ -35,5 +53,40 @@ export class InMemoryUserRepository implements IUserRepository {
 	async create(user: User, account: Account): Promise<void> {
 		this.users.push(user)
 		this.accountRepository.accounts.push(account)
+	}
+
+	async verify(user: User, account: Account): Promise<void> {
+		await this.save(user, account)
+	}
+
+	async addVerificationAttempt(user: User): Promise<void> {
+		const foundUserIndex = this.users.findIndex(value => value.id.equals(user.id))
+
+		if (foundUserIndex === -1) return
+
+		this.users[foundUserIndex] = user
+	}
+
+	async updatePassword(user: User): Promise<void> {
+		const foundUserIndex = this.users.findIndex(value => value.id.equals(user.id))
+
+		if (foundUserIndex === -1) return
+
+		this.users[foundUserIndex] = user
+	}
+
+	async save(user: User, account: Account): Promise<void> {
+		const foundUser = this.users.find(value => value.id.equals(user.id))
+		const foundUserIndex = this.users.findIndex(value => value.id.equals(user.id))
+
+		if (foundUserIndex === -1 || !foundUser) return
+
+		const foundAccount = await this.accountRepository.findById(account.id.value)
+		const foundAccountIndex = this.accountRepository.accounts.findIndex(value => value.id.equals(account.id))
+
+		if (foundAccountIndex === -1 || !foundAccount) return
+
+		this.users[foundUserIndex] = foundUser
+		this.accountRepository.accounts[foundAccountIndex] = foundAccount
 	}
 }

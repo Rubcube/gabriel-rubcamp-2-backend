@@ -3,7 +3,7 @@ import { Request, Response } from 'express'
 import { ok, fail } from 'common/utils/httpResponseUtil'
 
 import { UserMapper } from 'modules/identity/mappers/UserMapper'
-import { UpdateUserService } from 'modules/identity/service/UpdateUserService'
+import { UpdateUserService } from 'modules/identity/services/UpdateUserService'
 
 export class UserController {
 	async update(request: Request, response: Response): Promise<Response> {

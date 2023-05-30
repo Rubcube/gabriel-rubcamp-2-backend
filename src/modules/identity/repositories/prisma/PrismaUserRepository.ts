@@ -68,19 +68,7 @@ export class PrismaUserRepository implements IUserRepository {
 				created_at: data.created_at,
 				updated_at: data.updated_at
 			}),
-			account: AccountMapper.toDomain({
-				id: data.account.id,
-				user_id: data.account.user_id,
-				balance: data.account.balance,
-				account: data.account.account,
-				agency: data.account.agency,
-				status: data.account.status,
-				transaction_password: data.account.transaction_password,
-				created_at: data.account.created_at,
-				updated_at: data.account.updated_at,
-				closed_at: data.account.closed_at,
-				blocked_at: data.account.blocked_at
-			})
+			account: AccountMapper.toDomain(data.account)
 		}
 	}
 
@@ -182,7 +170,51 @@ export class PrismaUserRepository implements IUserRepository {
 		})
 	}
 
-	async save(user: User): Promise<void> {
+	async addVerificationAttempt(user: User): Promise<void> {
+		await prisma.user.update({
+			where: {
+				id: user.id.value
+			},
+			data: {
+				verificationAttempts: user.verificationAttempts,
+				lastVerificationTry: user.lastVerificationTry
+			}
+		})
+	}
+
+	async verify(user: User, account: Account): Promise<void> {
+		await prisma.user.update({
+			where: {
+				id: user.id.value
+			},
+			data: {
+				verificationAttempts: user.verificationAttempts,
+				lastVerificationTry: user.lastVerificationTry,
+				isPhoneVerified: user.isPhoneVerified,
+				isEmailVerified: user.isEmailVerified,
+				...(user.isVerified && {
+					account: {
+						update: {
+							status: account.props.status.props.value
+						}
+					}
+				})
+			}
+		})
+	}
+
+	async updatePassword(user: User): Promise<void> {
+		await prisma.user.update({
+			where: {
+				id: user.id.value
+			},
+			data: {
+				password: await user.password.getHashedValue()
+			}
+		})
+	}
+
+	async save(user: User, account: Account): Promise<void> {
 		await prisma.user.update({
 			where: {
 				id: user.id.value
@@ -194,6 +226,10 @@ export class PrismaUserRepository implements IUserRepository {
 				phone: `${user.phone.country_code}${user.phone.area_code}${user.phone.number}`,
 				document: user.document.value,
 				password: await user.password.getHashedValue(),
+				verificationAttempts: user.verificationAttempts,
+				lastVerificationTry: user.lastVerificationTry,
+				isPhoneVerified: user.isPhoneVerified,
+				isEmailVerified: user.isEmailVerified,
 				address: {
 					update: {
 						zipcode: user.props.address.props.zipcode,
@@ -203,6 +239,11 @@ export class PrismaUserRepository implements IUserRepository {
 						number: user.props.address.props.number,
 						complement: user.props.address.props.complement,
 						neighborhood: user.props.address.props.neighborhood
+					}
+				},
+				account: {
+					update: {
+						status: account.props.status.props.value
 					}
 				}
 			}

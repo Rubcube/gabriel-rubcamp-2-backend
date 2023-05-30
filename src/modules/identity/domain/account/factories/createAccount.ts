@@ -14,6 +14,7 @@ type CreateAccountProperties = {
 	agency: string
 	status: keyof typeof AccountStatusEnum
 	transactional_password: string
+	loginAttempts: number
 	created_at: Date
 	updated_at: Date
 	closed_at?: Date
@@ -37,6 +38,7 @@ export function createAccount(properties: CreateAccountProperties): Either<Viola
 			agency: properties.agency,
 			status: AccountStatus.create(properties.status),
 			transactional_password: transactional_password.value,
+			loginAttempts: properties.loginAttempts,
 			created_at: properties.created_at,
 			updated_at: properties.updated_at,
 			closed_at: properties.closed_at,

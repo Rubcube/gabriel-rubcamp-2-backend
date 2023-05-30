@@ -13,6 +13,7 @@ export class AccountMapper {
 			agency: payload.agency,
 			status: payload.status,
 			transactional_password: payload.transaction_password,
+			loginAttempts: payload.login_attempts,
 			created_at: payload.created_at,
 			updated_at: payload.updated_at,
 			closed_at: payload.closed_at ?? undefined,

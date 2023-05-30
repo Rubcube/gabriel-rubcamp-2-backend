@@ -1,6 +1,8 @@
+export type Channel = 'phone' | 'email'
+
 export type SendVerificationInput = {
 	to: string
-	channel: 'phone' | 'email'
+	channel: Channel
 	substitutions: {
 		name: string
 	}

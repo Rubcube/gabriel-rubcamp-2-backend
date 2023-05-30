@@ -1,3 +1,4 @@
+import { z } from 'zod'
 import { inject, injectable } from 'tsyringe'
 import { Either, left, right } from 'common/seedword/core/Either'
 
@@ -6,54 +7,60 @@ import { AppError } from 'common/seedword/errors/AppError'
 import { InternalError } from 'common/errors/InternalError'
 import { ResourceNotFound } from 'common/errors/ResourceNotFoundError'
 import { InvalidOperationError } from 'common/errors/InvalidOperationError'
+import { MaxVerificationAttemptsError } from 'common/errors/MaxVerificationAttemptsError'
 
 import { IUserRepository } from '../domain/user/IUserRepository'
-import { AccountStatusEnum } from '../domain/account/AccountStatus'
-import { IVerificationProvider } from 'common/providers/verification_provider/IVerificationProvider'
-import moment from 'moment'
+import { IVerificationProvider } from 'common/providers/verification/IVerificationProvider'
+import { InvalidParameterError } from 'common/errors/InvalidParameterError'
+import { ChoicesViolation } from 'common/domain/violations/ChoicesViolation'
 
 type Input = {
 	userId: string
+	channel: string
 }
 
 type Output = Either<AppError, null>
 
 @injectable()
-export class LoginService {
+export class SendVerificationCodeService {
 	constructor(
 		@inject('UserRepository')
 		private readonly userRepository: IUserRepository,
+		@inject('VerificationProvider')
 		private readonly verificationProvider: IVerificationProvider
 	) {}
 
 	async execute(input: Input): Promise<Output> {
+		const channelTypeGuard = z.enum(['phone', 'email'])
+		const parsedChannelTypeGuard = channelTypeGuard.safeParse(input.channel)
+
+		if (!parsedChannelTypeGuard.success) {
+			return left(new InvalidParameterError([new ChoicesViolation('channel', input.channel, channelTypeGuard.options)]))
+		}
+
+		const channel = parsedChannelTypeGuard.data
+
 		const data = await this.userRepository.findByIdWithAccount(input.userId)
 
 		if (!data?.user || !data?.account) {
 			return left(new ResourceNotFound())
 		}
 
-		if (data.account.props.status.props.value !== AccountStatusEnum.PENDING_VERIFICATION) {
+		if (channel === 'phone' && data.user.isPhoneVerified) {
 			return left(new InvalidOperationError())
 		}
 
-		if (data.user.isVerified || data.user.isPhoneVerified) {
+		if (channel === 'email' && data.user.isEmailVerified) {
 			return left(new InvalidOperationError())
 		}
 
-		if (data.user.verificationAttempts > 0) {
-			switch (data.user.verificationAttempts) {
-				case 1:
-					if (moment().isSameOrBefore(data.user.lastVerificationTry)) break
-
-				default:
-					break
-			}
+		if (!data.user.tryAddVerificationAttempt()) {
+			return left(new MaxVerificationAttemptsError(data.user.retryVerificationAfter()))
 		}
 
 		const result = await this.verificationProvider.sendVerification({
-			to: data.user.email.value,
-			channel: 'email',
+			to: channel === 'email' ? data.user.email.value : `+${data.user.phone.parsed}`,
+			channel,
 			substitutions: {
 				name: data.user.name.value
 			}
@@ -62,6 +69,8 @@ export class LoginService {
 		if (!result) {
 			return left(new InternalError())
 		}
+
+		await this.userRepository.addVerificationAttempt(data.user)
 
 		return right(null)
 	}

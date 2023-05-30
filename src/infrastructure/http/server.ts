@@ -4,8 +4,6 @@ import 'express-async-errors'
 import 'reflect-metadata'
 import 'common/container'
 
-// import client from 'twilio'
-
 import { onboardingRouter } from './routes/onboardingRouter'
 import { authRouter } from './routes/authRouter'
 import { userRouter } from './routes/userRouter'
@@ -42,26 +40,5 @@ app.use((error: any, _request: Request, response: Response, _next: NextFunction)
 app.listen(process.env.PORT ?? 3344, () => {
 	console.log('Application initialized')
 })
-
-// async function go() {
-// 	try {
-// 		const a = await client('AC4c87f783befe74fdcd9110cabd2522ac', 'd16462054050a96d81c7e5fd59dfc385')
-// 			.verify.v2.services('VA946c2b9eb7832fde2d2a25c5d8f4e803')
-// 			.verifications.create({
-// 				to: 'ogabrielribeirof@gmail.com',
-// 				channel: 'email',
-// 				channelConfiguration: {
-// 					substitutions: {
-// 						name: 'Amanda'
-// 					}
-// 				}
-// 			})
-
-// 		console.log(a.status)
-// 	} catch (error) {
-// 		console.error(error)
-// 	}
-// }
-// go()
 
 export { app }

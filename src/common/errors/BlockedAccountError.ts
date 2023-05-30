@@ -5,7 +5,7 @@ export class BlockedAccountError extends AppError {
 	constructor() {
 		super({
 			code: AppErrorCodes.BLOCKED_ACCOUNT,
-			message: 'Conta bloqueada'
+			message: 'Conta bloqueada pelo sistema'
 		})
 	}
 }

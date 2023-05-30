@@ -55,11 +55,14 @@ export class UpdateUserService {
 			return left(new InvalidParameterError([userId.value]))
 		}
 
-		const user = await this.userRepository.findById(userId.value.value)
+		const data = await this.userRepository.findByIdWithAccount(userId.value.value)
 
-		if (user === null) {
+		if (data === null) {
 			return left(new ResourceNotFound())
 		}
+
+		const user = data.user
+		const account = data.account
 
 		const name = Name.create(input.name)
 		const email = Email.create(input.email)
@@ -78,6 +81,9 @@ export class UpdateUserService {
 			if (emailAlreadyExists) {
 				return left(new InvalidOperationError())
 			}
+
+			user.isEmailVerified = false
+			account.statusToPendingVerification()
 		}
 
 		if (!phone.value.equals(user.phone)) {
@@ -86,6 +92,9 @@ export class UpdateUserService {
 			if (phoneAlreadyExists) {
 				return left(new InvalidOperationError())
 			}
+
+			user.isPhoneVerified = false
+			account.statusToPendingVerification()
 		}
 
 		user.name = name.value
@@ -94,7 +103,7 @@ export class UpdateUserService {
 		user.phone = phone.value
 		user.address = address.value
 
-		await this.userRepository.save(user)
+		await this.userRepository.save(user, account)
 
 		return right(user)
 	}

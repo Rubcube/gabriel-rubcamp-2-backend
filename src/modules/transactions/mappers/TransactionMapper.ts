@@ -8,7 +8,7 @@ export class TransactionMapper {
 			type: transaction.props.type.props.value,
 			source_id: transaction.props.source_id,
 			amount: transaction.props.amount,
-			created_at: transaction.props.created_at?.toString()
+			created_at: transaction.props.created_at?.toISOString()
 		}
 	}
 }

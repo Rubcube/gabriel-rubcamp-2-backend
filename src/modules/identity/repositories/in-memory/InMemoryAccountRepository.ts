@@ -21,4 +21,12 @@ export class InMemoryAccountRepository implements IAccountRepository {
 
 		return account ? account.props.balance : null
 	}
+
+	async addLoginAttempt(account: Account): Promise<void> {
+		const foundAccountIndex = this.accounts.findIndex(value => value.id.equals(account.id))
+
+		if (foundAccountIndex === -1) return
+
+		this.accounts[foundAccountIndex] = account
+	}
 }
