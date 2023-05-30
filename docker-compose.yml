@@ -43,27 +43,6 @@ services:
       db:
         condition: service_healthy
 
-  web_test:
-    container_name: web_test
-    build:
-      dockerfile: Dockerfile.dev
-    command: yarn test:unit
-    volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
-    networks:
-      - rubcamp
-    links:
-      - db
-    env_file:
-      - .env.dev
-    platform: 'linux/amd64'
-    depends_on:
-      db:
-        condition: service_healthy
-      web:
-        condition: service_started
-
 networks:
   rubcamp:
     driver: bridge
