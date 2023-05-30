@@ -16,7 +16,11 @@ export class OnboardingController {
 			name,
 			email,
 			birthday,
-			phone,
+			phone: {
+				countryCode: phone.country_code,
+				areaCode: phone.area_code,
+				number: phone.number
+			},
 			document,
 			password,
 			transactionalPassword: transactional_password,
