@@ -14,8 +14,8 @@ export class UserMapper {
 			email: payload.email,
 			birthday: moment(payload.birthday).format('YYYY-MM-DD'),
 			phone: {
-				country_code: payload.phone.substring(0, 2),
-				area_code: payload.phone.substring(2, 4),
+				countryCode: payload.phone.substring(0, 2),
+				areaCode: payload.phone.substring(2, 4),
 				number: payload.phone.substring(4, 13)
 			},
 			document: payload.document,
@@ -31,14 +31,14 @@ export class UserMapper {
 				number: payload.address.number,
 				complement: payload.address.complement,
 				neighborhood: payload.address.neighborhood,
-				updated_at: payload.address.updated_at
+				updatedAt: payload.address.updated_at
 			},
-			isPhoneVerified: payload.isPhoneVerified,
-			isEmailVerified: payload.isEmailVerified,
-			verificationAttempts: payload.verificationAttempts,
-			lastVerificationTry: payload.lastVerificationTry ?? undefined,
-			created_at: payload.created_at,
-			updated_at: payload.updated_at
+			isPhoneVerified: payload.is_phone_verified,
+			isEmailVerified: payload.is_email_verified,
+			verificationAttempts: payload.verification_attempts,
+			lastVerificationTry: payload.last_verification_try ?? undefined,
+			createdAt: payload.created_at,
+			updatedAt: payload.updated_at
 		})
 
 		if (user.isLeft()) throw new Error('Error on UserMapper.toDomain()')
@@ -53,8 +53,8 @@ export class UserMapper {
 			email: user.props.email.value,
 			birthday: user.props.birthday.value,
 			phone: {
-				country_code: user.props.phone.country_code,
-				area_code: user.props.phone.area_code,
+				country_code: user.props.phone.countryCode,
+				area_code: user.props.phone.areaCode,
 				number: user.props.phone.number
 			},
 			document: user.props.document.value,
@@ -66,12 +66,12 @@ export class UserMapper {
 				number: user.props.address.props.number,
 				complement: user.props.address.props.complement,
 				neighborhood: user.props.address.props.neighborhood,
-				updated_at: user.props.address.props.updated_at.toISOString()
+				updated_at: user.props.address.props.updatedAt.toISOString()
 			},
-			isEmailVerified: user.isEmailVerified,
-			isPhoneVerified: user.isPhoneVerified,
-			created_at: user.props.created_at?.toISOString(),
-			updated_at: user.props.updated_at?.toISOString()
+			is_email_verified: user.isEmailVerified,
+			is_phone_verified: user.isPhoneVerified,
+			created_at: user.props.createdAt?.toISOString(),
+			updated_at: user.props.updatedAt?.toISOString()
 		}
 	}
 }

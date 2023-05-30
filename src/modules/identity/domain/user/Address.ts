@@ -15,12 +15,12 @@ type AddressProperties = {
 	number: string
 	complement: string
 	neighborhood: string
-	updated_at: Date
+	updatedAt: Date
 }
 
 type CreateNewAddressProperties = {
-	updated_at?: Date
-} & Omit<AddressProperties, 'updated_at'>
+	updatedAt?: Date
+} & Omit<AddressProperties, 'updatedAt'>
 
 export class Address extends ValueObject<AddressProperties> {
 	static create(properties: CreateNewAddressProperties): Either<Violation[], Address> {
@@ -103,7 +103,7 @@ export class Address extends ValueObject<AddressProperties> {
 				number: properties.number,
 				complement: properties.complement,
 				neighborhood: properties.neighborhood,
-				updated_at: properties.updated_at ?? new Date()
+				updatedAt: properties.updatedAt ?? new Date()
 			})
 		)
 	}

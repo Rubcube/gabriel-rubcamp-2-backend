@@ -19,7 +19,7 @@ export class OnboardingController {
 			phone,
 			document,
 			password,
-			transactional_password,
+			transactionalPassword: transactional_password,
 			address: {
 				zipcode: address.zipcode,
 				city: address.city,

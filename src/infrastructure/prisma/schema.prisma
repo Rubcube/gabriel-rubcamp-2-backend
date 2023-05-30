@@ -12,21 +12,21 @@ datasource db {
 }
 
 model User {
-  id                   String    @id @default(uuid())
-  name                 String
-  email                String    @unique
-  birthday             DateTime  @db.Date()
-  phone                String    @unique
-  document             String    @unique
-  password             String
-  isPhoneVerified      Boolean   @default(false)
-  isEmailVerified      Boolean   @default(false)
-  verificationAttempts Int       @default(0)
-  lastVerificationTry  DateTime?
-  address              Address?
-  account              Account?
-  created_at           DateTime  @default(now())
-  updated_at           DateTime  @updatedAt
+  id                    String    @id @default(uuid())
+  name                  String
+  email                 String    @unique
+  birthday              DateTime  @db.Date()
+  phone                 String    @unique
+  document              String    @unique
+  password              String
+  is_phone_verified     Boolean   @default(false)
+  is_email_verified     Boolean   @default(false)
+  verification_attempts Int       @default(0)
+  last_verification_try DateTime?
+  address               Address?
+  account               Account?
+  created_at            DateTime  @default(now())
+  updated_at            DateTime  @updatedAt
 
   @@map("users")
 }

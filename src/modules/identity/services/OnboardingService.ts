@@ -23,13 +23,13 @@ type Input = {
 	email: string
 	birthday: string
 	phone: {
-		country_code: string
-		area_code: string
+		countryCode: string
+		areaCode: string
 		number: string
 	}
 	document: string
 	password: string
-	transactional_password: string
+	transactionalPassword: string
 	address: {
 		zipcode: string
 		city: string
@@ -55,14 +55,14 @@ export class CreateOnboardingService {
 		const email = Email.create(input.email)
 		const birthday = Birthday.create(input.birthday)
 		const phone = Phone.create({
-			country_code: input.phone.country_code,
-			area_code: input.phone.area_code,
+			countryCode: input.phone.countryCode,
+			areaCode: input.phone.areaCode,
 			number: input.phone.number
 		})
 		const document = Document.create(input.document)
 		const password = Password.create(input.password, false)
 
-		const transactional_password = TransactionalPassword.create(input.transactional_password)
+		const transactional_password = TransactionalPassword.create(input.transactionalPassword)
 
 		const address = Address.create(input.address)
 
@@ -95,11 +95,7 @@ export class CreateOnboardingService {
 			return left(new InvalidOperationError())
 		}
 
-		const phoneAlreadyExists = await this.userRepository.phoneExists({
-			country_code: input.phone.country_code,
-			area_code: input.phone.area_code,
-			number: input.phone.number
-		})
+		const phoneAlreadyExists = await this.userRepository.phoneExists(input.phone)
 
 		if (phoneAlreadyExists) {
 			return left(new InvalidOperationError())
@@ -116,8 +112,8 @@ export class CreateOnboardingService {
 		})
 
 		const account = Account.createNew({
-			user_id: user.id,
-			transactional_password: transactional_password.value
+			userId: user.id,
+			transactionalPassword: transactional_password.value
 		})
 
 		await this.userRepository.create(user, account)

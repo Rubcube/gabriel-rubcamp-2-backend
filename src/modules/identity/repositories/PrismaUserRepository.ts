@@ -29,10 +29,10 @@ export class PrismaUserRepository implements IUserRepository {
 			document: user.document,
 			password: user.password,
 			address: user.address,
-			isPhoneVerified: user.isPhoneVerified,
-			isEmailVerified: user.isEmailVerified,
-			verificationAttempts: user.verificationAttempts,
-			lastVerificationTry: user.lastVerificationTry,
+			is_phone_verified: user.is_phone_verified,
+			is_email_verified: user.is_email_verified,
+			verification_attempts: user.verification_attempts,
+			last_verification_try: user.last_verification_try,
 			created_at: user.created_at,
 			updated_at: user.updated_at
 		})
@@ -61,10 +61,10 @@ export class PrismaUserRepository implements IUserRepository {
 				document: data.document,
 				password: data.password,
 				address: data.address,
-				isPhoneVerified: data.isPhoneVerified,
-				isEmailVerified: data.isEmailVerified,
-				verificationAttempts: data.verificationAttempts,
-				lastVerificationTry: data.lastVerificationTry,
+				is_phone_verified: data.is_phone_verified,
+				is_email_verified: data.is_email_verified,
+				verification_attempts: data.verification_attempts,
+				last_verification_try: data.last_verification_try,
 				created_at: data.created_at,
 				updated_at: data.updated_at
 			}),
@@ -93,10 +93,10 @@ export class PrismaUserRepository implements IUserRepository {
 			document: user.document,
 			password: user.password,
 			address: user.address,
-			isPhoneVerified: user.isPhoneVerified,
-			isEmailVerified: user.isEmailVerified,
-			verificationAttempts: user.verificationAttempts,
-			lastVerificationTry: user.lastVerificationTry,
+			is_phone_verified: user.is_phone_verified,
+			is_email_verified: user.is_email_verified,
+			verification_attempts: user.verification_attempts,
+			last_verification_try: user.last_verification_try,
 			created_at: user.created_at,
 			updated_at: user.updated_at
 		})
@@ -122,11 +122,11 @@ export class PrismaUserRepository implements IUserRepository {
 		)
 	}
 
-	async phoneExists(phone: { country_code: string; area_code: string; number: string }): Promise<boolean> {
+	async phoneExists(phone: { countryCode: string; areaCode: string; number: string }): Promise<boolean> {
 		return (
 			(await prisma.user.count({
 				where: {
-					phone: `${phone.country_code}${phone.area_code}${phone.number}`
+					phone: `${phone.countryCode}${phone.areaCode}${phone.number}`
 				}
 			})) !== 0
 		)
@@ -159,11 +159,11 @@ export class PrismaUserRepository implements IUserRepository {
 						account: account.props.account,
 						agency: account.props.agency,
 						status: account.props.status.props.value,
-						transaction_password: account.props.transactional_password.value,
-						created_at: account.props.created_at,
-						updated_at: account.props.updated_at,
-						closed_at: account.props.closed_at,
-						blocked_at: account.props.blocked_at
+						transaction_password: account.props.transactionalPassword.value,
+						created_at: account.props.createdAt,
+						updated_at: account.props.updatedAt,
+						closed_at: account.props.closedAt,
+						blocked_at: account.props.blockedAt
 					}
 				}
 			}
@@ -176,8 +176,8 @@ export class PrismaUserRepository implements IUserRepository {
 				id: user.id.value
 			},
 			data: {
-				verificationAttempts: user.verificationAttempts,
-				lastVerificationTry: user.lastVerificationTry
+				verification_attempts: user.verificationAttempts,
+				last_verification_try: user.lastVerificationTry
 			}
 		})
 	}
@@ -188,10 +188,10 @@ export class PrismaUserRepository implements IUserRepository {
 				id: user.id.value
 			},
 			data: {
-				verificationAttempts: user.verificationAttempts,
-				lastVerificationTry: user.lastVerificationTry,
-				isPhoneVerified: user.isPhoneVerified,
-				isEmailVerified: user.isEmailVerified,
+				verification_attempts: user.verificationAttempts,
+				last_verification_try: user.lastVerificationTry,
+				is_phone_verified: user.isPhoneVerified,
+				is_email_verified: user.isEmailVerified,
 				...(user.isVerified && {
 					account: {
 						update: {
@@ -223,13 +223,13 @@ export class PrismaUserRepository implements IUserRepository {
 				name: user.name.value,
 				email: user.email.value,
 				birthday: new Date(user.birthday.value).toISOString(),
-				phone: `${user.phone.country_code}${user.phone.area_code}${user.phone.number}`,
+				phone: `${user.phone.countryCode}${user.phone.areaCode}${user.phone.number}`,
 				document: user.document.value,
 				password: await user.password.getHashedValue(),
-				verificationAttempts: user.verificationAttempts,
-				lastVerificationTry: user.lastVerificationTry,
-				isPhoneVerified: user.isPhoneVerified,
-				isEmailVerified: user.isEmailVerified,
+				verification_attempts: user.verificationAttempts,
+				last_verification_try: user.lastVerificationTry,
+				is_phone_verified: user.isPhoneVerified,
+				is_email_verified: user.isEmailVerified,
 				address: {
 					update: {
 						zipcode: user.props.address.props.zipcode,

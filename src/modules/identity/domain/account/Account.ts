@@ -8,20 +8,20 @@ import { TransactionalPassword } from './TransactionalPassword'
 import { AccountStatus } from './AccountStatus'
 
 type AccountProperties = {
-	user_id: UUID
+	userId: UUID
 	balance: number
 	account: string
 	agency: string
 	status: AccountStatus
-	transactional_password: TransactionalPassword
+	transactionalPassword: TransactionalPassword
 	loginAttempts: number
-	created_at?: Date
-	updated_at?: Date
-	closed_at?: Date
-	blocked_at?: Date
+	createdAt?: Date
+	updatedAt?: Date
+	closedAt?: Date
+	blockedAt?: Date
 }
 
-type CreateNewAccountProperties = Pick<AccountProperties, 'user_id' | 'transactional_password'>
+type CreateNewAccountProperties = Pick<AccountProperties, 'userId' | 'transactionalPassword'>
 
 export class Account extends AggregateRoot<AccountProperties> {
 	private constructor(properties: AccountProperties, id?: UUID) {
@@ -107,12 +107,12 @@ export class Account extends AggregateRoot<AccountProperties> {
 
 	static createNew(properties: CreateNewAccountProperties): Account {
 		return new Account({
-			user_id: properties.user_id,
+			userId: properties.userId,
 			balance: 0,
 			account: Account.generateAccountNumber(),
 			agency: '0001',
 			status: AccountStatus.create('PENDING_VERIFICATION'),
-			transactional_password: properties.transactional_password,
+			transactionalPassword: properties.transactionalPassword,
 			loginAttempts: 0
 		})
 	}

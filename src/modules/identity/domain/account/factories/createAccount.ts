@@ -8,41 +8,41 @@ import { AccountStatus, AccountStatusEnum } from '../AccountStatus'
 
 type CreateAccountProperties = {
 	id: string
-	user_id: string
+	userId: string
 	balance: number
 	account: string
 	agency: string
 	status: keyof typeof AccountStatusEnum
-	transactional_password: string
+	transactionalPassword: string
 	loginAttempts: number
-	created_at: Date
-	updated_at: Date
-	closed_at?: Date
-	blocked_at?: Date
+	createdAt: Date
+	updatedAt: Date
+	closedAt?: Date
+	blockedAt?: Date
 }
 
 export function createAccount(properties: CreateAccountProperties): Either<Violation[], Account> {
 	const id = UUID.createFrom({ value: properties.id, field: 'id' })
-	const user_id = UUID.createFrom({ value: properties.user_id, field: 'user_id' })
-	const transactional_password = TransactionalPassword.create(properties.transactional_password)
+	const userId = UUID.createFrom({ value: properties.userId, field: 'user_id' })
+	const transactionalPassword = TransactionalPassword.create(properties.transactionalPassword)
 
-	if (id.isLeft() || user_id.isLeft() || transactional_password.isLeft()) {
-		return left(combineLefts(id, user_id, transactional_password))
+	if (id.isLeft() || userId.isLeft() || transactionalPassword.isLeft()) {
+		return left(combineLefts(id, userId, transactionalPassword))
 	}
 
 	return Account.create(
 		{
-			user_id: user_id.value,
+			userId: userId.value,
 			balance: properties.balance,
 			account: properties.account,
 			agency: properties.agency,
 			status: AccountStatus.create(properties.status),
-			transactional_password: transactional_password.value,
+			transactionalPassword: transactionalPassword.value,
 			loginAttempts: properties.loginAttempts,
-			created_at: properties.created_at,
-			updated_at: properties.updated_at,
-			closed_at: properties.closed_at,
-			blocked_at: properties.blocked_at
+			createdAt: properties.createdAt,
+			updatedAt: properties.updatedAt,
+			closedAt: properties.closedAt,
+			blockedAt: properties.blockedAt
 		},
 		id.value
 	)

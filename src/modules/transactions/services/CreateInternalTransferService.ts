@@ -64,7 +64,7 @@ export class CreateInternalTransferService {
 			return left(new InvalidOperationError())
 		}
 
-		if (!senderAccount.props.transactional_password.equals(transactionalPassword.value)) {
+		if (!senderAccount.props.transactionalPassword.equals(transactionalPassword.value)) {
 			return left(new WrongTransactionalPasswordError())
 		}
 

@@ -9,18 +9,18 @@ import { WrongTypeViolation } from 'common/domain/violations/WrongTypeViolation'
 import { InvalidPhoneViolation } from 'common/domain/violations/InvalidPhoneViolation'
 
 type PhoneProperties = {
-	country_code: string
-	area_code: string
+	countryCode: string
+	areaCode: string
 	number: string
 }
 
 export class Phone extends ValueObject<PhoneProperties> {
-	get country_code(): string {
-		return this.props.country_code
+	get countryCode(): string {
+		return this.props.countryCode
 	}
 
-	get area_code(): string {
-		return this.props.area_code
+	get areaCode(): string {
+		return this.props.areaCode
 	}
 
 	get number(): string {
@@ -28,13 +28,13 @@ export class Phone extends ValueObject<PhoneProperties> {
 	}
 
 	get parsed(): string {
-		return `${this.country_code}${this.area_code}${this.number}`
+		return `${this.countryCode}${this.areaCode}${this.number}`
 	}
 
 	private static isValid(properties: PhoneProperties): boolean {
 		return (
-			/^55$/.test(properties.country_code) &&
-			/^[1-9][0-9]{1}$/.test(properties.area_code) &&
+			/^55$/.test(properties.countryCode) &&
+			/^[1-9][0-9]{1}$/.test(properties.areaCode) &&
 			/^[6-9][0-9]{8}$/.test(properties.number)
 		)
 	}
@@ -43,11 +43,11 @@ export class Phone extends ValueObject<PhoneProperties> {
 		const null_undefined_guard_result = Guard.againstNullOrUndefinedBulk([
 			{
 				field: 'phone.country_code',
-				value: properties.country_code
+				value: properties.countryCode
 			},
 			{
 				field: 'phone.area_code',
-				value: properties.area_code
+				value: properties.areaCode
 			},
 			{
 				field: 'phone.number',
@@ -62,11 +62,11 @@ export class Phone extends ValueObject<PhoneProperties> {
 		const type_guard_result = Guard.isOfTypeBulk('string', [
 			{
 				field: 'phone.country_code',
-				value: properties.country_code
+				value: properties.countryCode
 			},
 			{
 				field: 'phone.area_code',
-				value: properties.area_code
+				value: properties.areaCode
 			},
 			{
 				field: 'phone.number',
@@ -84,8 +84,8 @@ export class Phone extends ValueObject<PhoneProperties> {
 
 		return right(
 			new Phone({
-				country_code: properties.country_code,
-				area_code: properties.area_code,
+				countryCode: properties.countryCode,
+				areaCode: properties.areaCode,
 				number: properties.number
 			})
 		)

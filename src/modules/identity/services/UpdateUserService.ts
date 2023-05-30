@@ -23,8 +23,8 @@ type Input = {
 	email: string
 	birthday: string
 	phone: {
-		country_code: string
-		area_code: string
+		countryCode: string
+		areaCode: string
 		number: string
 	}
 	document: string

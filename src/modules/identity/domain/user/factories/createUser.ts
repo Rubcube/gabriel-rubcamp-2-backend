@@ -18,8 +18,8 @@ type CreateUserProperties = {
 	email: string
 	birthday: string
 	phone: {
-		country_code: string
-		area_code: string
+		countryCode: string
+		areaCode: string
 		number: string
 	}
 	document: string
@@ -35,14 +35,14 @@ type CreateUserProperties = {
 		number: string
 		complement: string
 		neighborhood: string
-		updated_at: Date
+		updatedAt: Date
 	}
 	isPhoneVerified: boolean
 	isEmailVerified: boolean
 	verificationAttempts: number
 	lastVerificationTry?: Date
-	created_at: Date
-	updated_at: Date
+	createdAt: Date
+	updatedAt: Date
 }
 
 export function createUser(properties: CreateUserProperties): Either<Violation[], User> {
@@ -50,11 +50,7 @@ export function createUser(properties: CreateUserProperties): Either<Violation[]
 	const name = Name.create(properties.name)
 	const email = Email.create(properties.email)
 	const birthday = Birthday.create(properties.birthday)
-	const phone = Phone.create({
-		country_code: properties.phone.country_code,
-		area_code: properties.phone.area_code,
-		number: properties.phone.number
-	})
+	const phone = Phone.create(properties.phone)
 	const document = Document.create(properties.document)
 	const password = Password.create(properties.password.value, properties.password.hashed)
 	const address = createAddress({ address: properties.address })
@@ -86,8 +82,8 @@ export function createUser(properties: CreateUserProperties): Either<Violation[]
 				isEmailVerified: properties.isEmailVerified,
 				verificationAttempts: properties.verificationAttempts,
 				lastVerificationTry: properties.lastVerificationTry,
-				created_at: properties.created_at,
-				updated_at: properties.updated_at
+				createdAt: properties.createdAt,
+				updatedAt: properties.updatedAt
 			},
 			id.value
 		)
@@ -103,7 +99,7 @@ export function createAddress(properties: Pick<CreateUserProperties, 'address'>)
 		number: properties.address.number,
 		complement: properties.address.complement,
 		neighborhood: properties.address.neighborhood,
-		updated_at: properties.address.updated_at
+		updatedAt: properties.address.updatedAt
 	})
 
 	if (address.isLeft()) {

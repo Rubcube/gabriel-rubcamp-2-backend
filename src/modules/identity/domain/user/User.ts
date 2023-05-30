@@ -27,13 +27,13 @@ type UserProperties = {
 	isEmailVerified: boolean
 	verificationAttempts: number
 	lastVerificationTry?: Date
-	created_at?: Date
-	updated_at?: Date
+	createdAt?: Date
+	updatedAt?: Date
 }
 
 type CreateNewUserProperties = Omit<
 	UserProperties,
-	'created_at' | 'updated_at' | 'isPhoneVerified' | 'isEmailVerified' | 'verificationAttempts' | 'lastVerificationTry'
+	'createdAt' | 'updatedAt' | 'isPhoneVerified' | 'isEmailVerified' | 'verificationAttempts' | 'lastVerificationTry'
 >
 
 export class User extends AggregateRoot<UserProperties> {
@@ -201,20 +201,20 @@ export class User extends AggregateRoot<UserProperties> {
 		this.isEmailVerified = true
 	}
 
-	get created_at(): Date | undefined {
-		return this.props.created_at
+	get createdAt(): Date | undefined {
+		return this.props.createdAt
 	}
 
-	set created_at(value: Date | undefined) {
-		this.props.created_at = value
+	set createdAt(value: Date | undefined) {
+		this.props.createdAt = value
 	}
 
-	get updated_at(): Date | undefined {
-		return this.props.updated_at
+	get updatedAt(): Date | undefined {
+		return this.props.updatedAt
 	}
 
-	set updated_at(value: Date | undefined) {
-		this.props.updated_at = value
+	set updatedAt(value: Date | undefined) {
+		this.props.updatedAt = value
 	}
 
 	public async changePassword(oldPassword: string, password: string): Promise<Either<Violation, null>> {
