@@ -49,4 +49,15 @@ export class PrismaAccountRepository implements IAccountRepository {
 			}
 		})
 	}
+
+	async login(account: Account): Promise<void> {
+		await prisma.account.update({
+			where: {
+				id: account.id.value
+			},
+			data: {
+				login_attempts: account.props.loginAttempts
+			}
+		})
+	}
 }

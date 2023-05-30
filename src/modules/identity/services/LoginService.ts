@@ -75,6 +75,10 @@ export class LoginService {
 			return left(new InvalidParameterError())
 		}
 
+		account.login()
+
+		await this.accountRepository.login(account)
+
 		const token = this.tokenProvider.signUserToken(user, account)
 
 		return right({ token })

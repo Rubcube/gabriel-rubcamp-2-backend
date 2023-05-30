@@ -67,11 +67,16 @@ export class Account extends AggregateRoot<AccountProperties> {
 	}
 
 	addLoginAttempt() {
-		if (this.props.loginAttempts === 4) {
-			this.props.status = AccountStatus.create('BLOCKED')
-		}
-
 		this.props.loginAttempts++
+
+		if (this.props.loginAttempts === 5) {
+			this.props.status = AccountStatus.create('BLOCKED')
+			this.props.loginAttempts = 0
+		}
+	}
+
+	login() {
+		this.props.loginAttempts = 0
 	}
 
 	isOpen(): boolean {

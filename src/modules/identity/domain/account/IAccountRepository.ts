@@ -5,4 +5,5 @@ export type IAccountRepository = {
 	findByUserId: (userId: string) => Promise<Account | null>
 	findBalanceById: (id: string) => Promise<number | null>
 	addLoginAttempt: (account: Account) => Promise<void>
+	login: (account: Account) => Promise<void>
 }
