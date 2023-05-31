@@ -1,54 +1,58 @@
-import { sign, verify } from 'jsonwebtoken'
+import { JwtPayload, sign, verify } from 'jsonwebtoken'
+import { Either, left, right } from 'common/seedword/core/Either'
 
-import { authentication, reset } from 'config/token'
+import { tokensConfig } from 'config/token'
+import { InvalidJWTTokenError } from 'common/errors/InvalidJWTTokenError'
 
-import { TokenPayload } from '../ITokenPayload'
 import { ITokenProvider } from '../ITokenProvider'
+import { IAuthTokenPayload } from '../IAuthTokenPayload'
+import { IResetTokenPayload } from '../IResetTokenPayload'
+
 import { User } from 'modules/identity/domain/user/User'
 import { Account } from 'modules/identity/domain/account/Account'
 
-async function decodePromise(token: string, secret: string): Promise<TokenPayload> {
-	return await new Promise((resolve, reject) => {
-		verify(token, secret, (error, data) => {
-			if (error) {
-				reject(error)
-				return
-			}
-
-			if (data && typeof data !== 'string') {
-				resolve({
-					issued_at: Number(data.iat),
-					expires_in: Number(data.exp),
-					subject: String(data.sub),
-					account_id: String(data.account_id),
-					type: data.type
-				})
-				return
-			}
-
-			reject(data)
-		})
-	})
-}
-
 export class TokenProvider implements ITokenProvider {
-	public async decodeAuthToken(token: string): Promise<TokenPayload> {
-		return await decodePromise(token, authentication.secret)
+	public decodeAuthToken(token: string): Either<InvalidJWTTokenError, IAuthTokenPayload> {
+		try {
+			const decodedToken = verify(token, tokensConfig.authSecret) as JwtPayload
+
+			return right({
+				issued_at: Number(decodedToken.iat),
+				expires_in: Number(decodedToken.exp),
+				subject: String(decodedToken.sub),
+				account_id: String(decodedToken.account_id),
+				type: decodedToken.type
+			})
+		} catch (error) {
+			return left(new InvalidJWTTokenError())
+		}
 	}
 
-	public async decodeResetToken(token: string): Promise<TokenPayload> {
-		return await decodePromise(token, reset.secret)
+	public decodeResetToken(token: string): Either<InvalidJWTTokenError, IResetTokenPayload> {
+		try {
+			const decodedToken = verify(token, tokensConfig.resetSecret) as JwtPayload
+
+			return right({
+				issued_at: Number(decodedToken.iat),
+				expires_in: Number(decodedToken.exp),
+				subject: String(decodedToken.sub),
+				account_id: String(decodedToken.account_id),
+				type: decodedToken.type
+			})
+		} catch (error) {
+			return left(new InvalidJWTTokenError())
+		}
 	}
 
 	public signUserToken(user: User, account: Account): string {
-		return sign({ account_id: account.id.value, type: 'auth' }, authentication.secret, {
+		return sign({ account_id: account.id.value, type: 'auth' }, tokensConfig.authSecret, {
 			subject: user.id.value,
 			expiresIn: '31d'
 		})
 	}
 
 	public signUserResetToken(user: User): string {
-		return sign({ type: 'reset' }, reset.secret, {
+		return sign({ type: 'reset' }, tokensConfig.resetSecret, {
 			subject: user.id.value,
 			expiresIn: '10min'
 		})

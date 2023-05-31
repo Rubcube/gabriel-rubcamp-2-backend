@@ -1,7 +1,4 @@
-export const authentication = {
-	secret: String(process.env.JWT_AUTH_SECRET)
-}
-
-export const reset = {
-	secret: String(process.env.JWT_RESET_SECRET)
+export const tokensConfig = {
+	resetSecret: String(process.env.JWT_RESET_SECRET),
+	authSecret: String(process.env.JWT_AUTH_SECRET)
 }
