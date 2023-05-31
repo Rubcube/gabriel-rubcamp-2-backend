@@ -6,6 +6,7 @@ import { InvalidParameterError } from 'common/errors/InvalidParameterError'
 import { ResourceNotFound } from 'common/errors/ResourceNotFoundError'
 
 import { UUID } from 'common/seedword/domain/UUID'
+import { Password } from '../domain/user/Password'
 
 import { IUserRepository } from '../domain/user/IUserRepository'
 
@@ -25,6 +26,12 @@ export class UpdateUserPasswordService {
 	) {}
 
 	async execute(input: Input): Promise<Output> {
+		const password = Password.create(input.password, false)
+
+		if (password.isLeft()) {
+			return left(new InvalidParameterError([password.value]))
+		}
+
 		const userId = UUID.createFrom({ value: input.userId, field: 'user_id' })
 
 		if (userId.isLeft()) {
@@ -37,7 +44,7 @@ export class UpdateUserPasswordService {
 			return left(new ResourceNotFound())
 		}
 
-		const changePasswordResult = await user.changePassword(input.oldPassword, input.password)
+		const changePasswordResult = await user.changePassword(input.oldPassword, password.value)
 
 		if (changePasswordResult.isLeft()) {
 			return left(new InvalidParameterError([changePasswordResult.value]))

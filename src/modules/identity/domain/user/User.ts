@@ -213,22 +213,26 @@ export class User extends AggregateRoot<UserProperties> {
 		this.props.updatedAt = value
 	}
 
-	public async changePassword(oldPassword: string, password: string): Promise<Either<Violation, null>> {
-		if (oldPassword === password) {
-			return left(new NewPasswordEqualOldViolation())
-		}
-
+	public async changePassword(oldPassword: string, password: Password): Promise<Either<Violation, null>> {
 		if (!(await this.password.comparePassword(oldPassword))) {
 			return left(new WrongOldPasswordViolation())
 		}
 
-		const newPassword = Password.create(password, false)
-
-		if (newPassword.isLeft()) {
-			return left(newPassword.value)
+		if (oldPassword === password.value) {
+			return left(new NewPasswordEqualOldViolation())
 		}
 
-		this.password = newPassword.value
+		this.password = password
+
+		return right(null)
+	}
+
+	public resetPassword(password: Password): Either<Violation, null> {
+		if (this.password.value === password.value) {
+			return left(new NewPasswordEqualOldViolation())
+		}
+
+		this.password = password
 
 		return right(null)
 	}

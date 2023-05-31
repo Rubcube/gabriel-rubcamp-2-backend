@@ -2,7 +2,6 @@ import { inject, injectable } from 'tsyringe'
 import { Either, right, left } from 'common/seedword/core/Either'
 
 import { AppError } from 'common/seedword/errors/AppError'
-import { UnauthorizedError } from 'common/errors/UnauthorizedError'
 import { InvalidParameterError } from 'common/errors/InvalidParameterError'
 import { ResourceNotFound } from 'common/errors/ResourceNotFoundError'
 
@@ -34,23 +33,19 @@ export class ResetPasswordService {
 			return left(new InvalidParameterError([password.value]))
 		}
 
-		let userId: string
+		const result = this.tokenProvider.decodeResetToken(input.token)
 
-		try {
-			const result = await this.tokenProvider.decodeResetToken(input.token)
-
-			userId = result.subject
-		} catch (error) {
-			return left(new UnauthorizedError())
+		if (result.isLeft()) {
+			return left(result.value)
 		}
 
-		const user = await this.userRepository.findById(userId)
+		const user = await this.userRepository.findById(result.value.subject)
 
 		if (!user) {
 			return left(new ResourceNotFound())
 		}
 
-		user.password = password.value
+		user.resetPassword(password.value)
 
 		await this.userRepository.updatePassword(user)
 
