@@ -17,10 +17,16 @@ export const ensureAuthentication = async (request: Request, response: Response,
 	try {
 		const tokenProvider = container.resolve<TokenProvider>('TokenProvider')
 
-		const payload = await tokenProvider.decodeAuthToken(token)
+		const payload = tokenProvider.decodeAuthToken(token)
 
-		request.userId = payload.subject
-		request.accountId = payload.account_id
+		if (payload.isLeft()) {
+			response.status(401).send(payload.value)
+
+			return
+		}
+
+		request.userId = payload.value.subject
+		request.accountId = payload.value.account_id
 	} catch {
 		response.status(403).send()
 
